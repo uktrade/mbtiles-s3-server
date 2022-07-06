@@ -4,8 +4,14 @@
 #
 #    pip-compile requirements_test.in
 #
+anyio==3.6.1
+    # via httpcore
 attrs==21.4.0
     # via pytest
+certifi==2022.6.15
+    # via
+    #   httpcore
+    #   httpx
 cfgv==3.3.1
     # via pre-commit
 coverage==6.4.1
@@ -20,8 +26,18 @@ greenlet==1.1.2
     # via
     #   -r requirements.txt
     #   gevent
+h11==0.12.0
+    # via httpcore
+httpcore==0.15.0
+    # via httpx
+httpx==0.23.0
+    # via -r requirements_test.in
 identify==2.5.1
     # via pre-commit
+idna==3.3
+    # via
+    #   anyio
+    #   rfc3986
 iniconfig==1.1.1
     # via pytest
 nodeenv==1.7.0
@@ -42,8 +58,15 @@ pytest==7.1.2
     # via -r requirements_test.in
 pyyaml==6.0
     # via pre-commit
+rfc3986[idna2008]==1.5.0
+    # via httpx
 six==1.16.0
     # via virtualenv
+sniffio==1.2.0
+    # via
+    #   anyio
+    #   httpcore
+    #   httpx
 toml==0.10.2
     # via pre-commit
 tomli==2.0.1
