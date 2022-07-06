@@ -5,7 +5,7 @@ jobs:
       - image: cimg/python:3.9.8
         environment:
           PRE_COMMIT_HOME: /home/circleci/cache/pre-commit
-      - image: minio/minio:RELEASE.2021-11-24T23-19-33Z.hotfix.1d85a4563
+      - image: minio/minio:RELEASE.2022-07-04T21-02-54Z
         environment:
           MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
           MINIO_SECRET_KEY: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
