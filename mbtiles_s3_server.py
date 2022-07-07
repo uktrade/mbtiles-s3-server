@@ -37,7 +37,6 @@ def mbtiles_s3_server(
     def get_tile():
         with sqlite_s3_query(url=mbtiles_url) as query:
             with query('SELECT * FROM sqlite_master', params=()) as (columns, rows):
-                pass
                 for row in rows:
                     pass
 
