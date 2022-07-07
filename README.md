@@ -33,7 +33,7 @@ AWS_SESSION_TOKEN="Only needed for temporary credentials" \
 ```
 
 
-## Underlying components
+## For the curious, advanced, or developers of this server itself
 
 Hosting your own vector map tiles to show them in a browser requires quite a few components:
 
