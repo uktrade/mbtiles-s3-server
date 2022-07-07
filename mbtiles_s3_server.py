@@ -30,18 +30,29 @@ def mbtiles_s3_server(
 ):
     server = None
     http_client = httpx.Client()
-    mbtiles_dict = {
-        mbtile['IDENTIFIER']: mbtile
-        for mbtile in mbtiles
-    }
 
     def read(path):
         real_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
         with open(real_path, 'rb') as f:
             return f.read()
 
+    mbtiles_dict = {
+        mbtile['IDENTIFIER']: mbtile
+        for mbtile in mbtiles
+    }
+
     styles_dict = {
         'positron-gl-style': read('mbtiles_s3_server/vendor/positron-gl-style/style.json'),
+    }
+    statics_dict = {
+        'maplibre-gl.2.1.9.css': {
+            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl/maplibre-gl.2.1.9.css'),
+            'mime': 'text/css',
+        },
+        'maplibre-gl.2.1.9.js': {
+            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl/maplibre-gl.2.1.9.js'),
+            'mime': 'application/javascript',
+        },
     }
 
     def start():
@@ -104,8 +115,18 @@ def mbtiles_s3_server(
         return Response(status=200, content_type='application/json',
                         response=json.dumps(style_dict))
 
+    def get_static(identifier):
+        try:
+            static_dict = statics_dict[identifier]
+        except KeyError:
+            return Response(status=404)
+
+        return Response(status=200, content_type=static_dict['mime'],
+                        response=static_dict['bytes'])
+
     app.add_url_rule('/v1/tiles/<string:identifier>/<int:z>/<int:x>/<int:y>', view_func=get_tile)
     app.add_url_rule('/v1/styles/<string:identifier>.json', view_func=get_styles)
+    app.add_url_rule('/v1/static/<string:identifier>', view_func=get_static)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)
 
     return start, stop

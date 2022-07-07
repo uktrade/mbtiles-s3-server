@@ -148,6 +148,16 @@ def test_styles_file_does_not_exists(processes):
     assert response.status_code == 404
 
 
+def test_static_file(processes):
+    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl.2.1.9.css')
+    assert response.status_code == 200
+
+
+def test_static_file_not_exist(processes):
+    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl.2.1.9.not')
+    assert response.status_code == 404
+
+
 def put_object_no_raise(key, contents, params=()):
     url = f'http://127.0.0.1:9000/my-bucket/{key}'
     body_hash = hashlib.sha256(contents).hexdigest()
