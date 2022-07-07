@@ -97,6 +97,12 @@ def fixture_processes():
         yield (processes, outputs)
 
 
+def test_meta_application_fails():
+    # Ensure code coverage even on failing path
+    with pytest.raises(ConnectionError):
+        application(max_attempts=1).__enter__()
+
+
 def test_tile_exists(processes):
     response = httpx.get('http://127.0.0.1:8080/0/0/0')
     response.raise_for_status()
