@@ -1,7 +1,7 @@
 # mbtiles-s3-server [![CircleCI](https://circleci.com/gh/uktrade/mbtiles-s3-server.svg?style=shield)](https://circleci.com/gh/uktrade/mbtiles-s3-server) [![Test Coverage](https://api.codeclimate.com/v1/badges/c261eb01bc9446278cd3/test_coverage)](https://codeclimate.com/github/uktrade/mbtiles-s3-server/test_coverage)
 
 
-Python server to on-the-fly extract and serve vector tiles from mbtiles files on S3. Javascript, maps styles, fonts, and sprites are included so you can get setup quickly, but are not required to be used.
+Python server to on-the-fly extract and serve vector tiles from mbtiles files on S3. Javascript, maps styles, fonts, and sprites are included so you can get setup quickly, especially with OpenMapTiles mbtiles files, but are these are not required to be used.
 
 Versioning must be enabled on the underlying S3 bucket
 
