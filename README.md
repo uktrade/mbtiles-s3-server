@@ -8,33 +8,6 @@ Versioning must be enabled on the underlying S3 bucket
 > Work in progress. Not all features below are implemented. This document serves as a rough design spec.
 
 
-## Why does this exist?
-
-Hosting your own vector map tiles and then showing them in a browser has quite a few moving parts, and this project attempts to make it as straightforward as possible.
-
-The components are:
-
-1. **JavaScript**
-
-   A library such as [MapLibre GL](https://github.com/maplibre/maplibre-gl-js), and your own code to run the library, and point it to a style file
-
-2. **Style file**
-
-   A JSON file that defines how the library should style the map tiles, and where it should find the map tiles, glyphs (fonts), and the sprite
-
-3. **Glyphs** (fonts)
-
-   Sets of fonts; different fonts can be used for different labels and zoom levels, as defined in the Style file
-
-4. **Sprite**
-
-   A single JSON index file and a single PNG file; the JSON file contains the offsets and sizes of images within the single PNG file
-
-5. **Vector map tiles**
-
-   A set of often hundreds of thousands of tiles each covering a different location and different zoom level. These can be distributed as a single mbtiles file, but this is not the format that the Javascript library accepts. This on-the-fly conversion from the mbtiles file to tiles is the main feature of this server.
-
-
 ## Installation
 
 ```bash
@@ -58,6 +31,32 @@ AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
 AWS_SESSION_TOKEN="Only needed for temporary credentials" \
     python -m mbtiles_s3_server
 ```
+
+
+## Underlying components
+
+Hosting your own vector map tiles to show them in a browser requires quite a few components:
+
+1. **JavaScript**
+
+   A library such as [MapLibre GL](https://github.com/maplibre/maplibre-gl-js), and your own code to run the library, and point it to a style file
+
+2. **Style file**
+
+   A JSON file that defines how the library should style the map tiles, and where it should find the map tiles, glyphs (fonts), and the sprite
+
+3. **Glyphs** (fonts)
+
+   Sets of fonts; different fonts can be used for different labels and zoom levels, as defined in the Style file
+
+4. **Sprite**
+
+   A single JSON index file and a single PNG file; the JSON file contains the offsets and sizes of images within the single PNG file
+
+5. **Vector map tiles**
+
+   A set of often hundreds of thousands of tiles each covering a different location and different zoom level. These can be distributed as a single mbtiles file, but this is not the format that the Javascript library accepts. This on-the-fly conversion from the mbtiles file to tiles is the main feature of this server.
+
 
 ## Licenses
 
