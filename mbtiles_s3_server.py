@@ -16,6 +16,7 @@ from flask import (
     Flask,
     Response,
 )
+import httpx
 from sqlite_s3_query import sqlite_s3_query
 
 
@@ -25,6 +26,7 @@ def mbtiles_s3_server(
         mbtiles_url,
 ):
     server = None
+    http_client = httpx.Client()
 
     def start():
         server.serve_forever()
@@ -36,7 +38,7 @@ def mbtiles_s3_server(
 
     def get_tile():
         with \
-                sqlite_s3_query(url=mbtiles_url) as query, \
+                sqlite_s3_query(url=mbtiles_url, get_http_client=lambda: http_client) as query, \
                 query('SELECT * FROM sqlite_master', params=()) as (columns, rows):
 
             for row in rows:
