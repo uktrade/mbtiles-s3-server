@@ -140,7 +140,7 @@ def test_styles_file(processes):
     assert style_dict['sources'] == {
         'openmaptiles': {
             'type': 'vector',
-            'tiles': ['http://127.0.0.1:8080//tiles/mytiles/{z}/{x}/{y}'],
+            'tiles': ['http://127.0.0.1:8080/tiles/mytiles/{z}/{x}/{y}'],
         },
     }
 

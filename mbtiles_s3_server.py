@@ -109,7 +109,7 @@ def mbtiles_s3_server(
         style_dict['sources']['openmaptiles'] = {
             'type': 'vector',
             'tiles': [
-                request.url_root + '/tiles/' + tiles_identifier + '/{z}/{x}/{y}'
+                request.url_root + 'tiles/' + tiles_identifier + '/{z}/{x}/{y}'
             ],
         }
 
