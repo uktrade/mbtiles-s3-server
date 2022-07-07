@@ -34,6 +34,42 @@ HTTP_ACCESS_CONTROL_ALLOW_ORIGIN="*" \
 ```
 
 
+## Example HTML
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Example map</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <script src="http://localhost:8080/v1/static/maplibre-gl.2.1.9.js"></script>
+    <link href="http://localhost:8080/v1/static/maplibre-gl.2.1.9.css" rel="stylesheet">
+  </head>
+  <body>
+    <h1>Example map</h1>
+    <div id='map' style='width: 400px; height: 300px;'></div>
+    <script>
+    var map = new maplibregl.Map({
+        container: 'map',
+        style: 'http://localhost:8080/v1/styles/positron-gl-style.json?tiles=mytiles',
+        center: [-74.5, 40],
+        zoom: 9
+    });
+    </script>
+  </body>
+</html>
+```
+
+This file is included in this repository as [example.html](./example.html).
+
+```bash
+python -m http.server 8081 --bind 127.0.0.1
+````
+
+and going to [http://localhost:8081/example.html](http://localhost:8081/example.html)
+
+
 ## For the curious, advanced, or developers of this server itself
 
 Hosting your own vector map tiles to show them in a browser requires quite a few components:
