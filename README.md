@@ -20,15 +20,15 @@ The components are:
 
 2. **Style file**
 
-   A JSON file that tells the library how to find the map tiles, how to style them, how to find to glyphs (fonts), and how to find the sprite
+   A JSON file that defines how the library should style the map tiles, and where it should find the map tiles, glyphs (fonts), and the sprite
 
 3. **Glyphs** (fonts)
 
-   Sets of fonts; the style file specified which font is used for what sort of label or zoom levels
+   Sets of fonts; different fonts can be used for different labels and zoom levels, as defined in the Style file
 
 4. **Sprite**
 
-   A single JSON index file with URLs to and offsets in image files; the style file determines when these are used
+   A single JSON index file and a single PNG file; the JSON file contains the offsets and sizes of images within the single PNG file
 
 5. **Vector map tiles**
 
