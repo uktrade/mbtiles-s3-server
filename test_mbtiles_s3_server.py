@@ -55,6 +55,7 @@ def application(port=8080, max_attempts=500, aws_access_key_id='AKIAIOSFODNN7EXA
                 'AWS_REGION': 'us-east-1',
                 'MBTILES__1__URL': 'http://127.0.0.1:9000/my-bucket/counties.mbtiles',
                 'MBTILES__1__IDENTIFIER': 'mytiles',
+                'HTTP_ACCESS_CONTROL_ALLOW_ORIGIN': 'https://my.test/',
             }
         )
         for name, args in process_definitions.items()
@@ -115,6 +116,7 @@ def test_tile_exists(processes):
     response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles/0/0/0')
     response.raise_for_status()
 
+    assert response.headers['access-control-allow-origin'] == 'https://my.test/'
     assert response.status_code == 200
     assert len(response.content) > 1000
 

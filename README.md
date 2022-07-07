@@ -29,6 +29,7 @@ AWS_REGION=eu-west-2 \
 AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE \
 AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
 AWS_SESSION_TOKEN="Only needed for temporary credentials" \
+HTTP_ACCESS_CONTROL_ALLOW_ORIGIN="*" \
     python -m mbtiles_s3_server
 ```
 

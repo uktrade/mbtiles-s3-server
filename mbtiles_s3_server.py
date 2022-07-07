@@ -27,6 +27,7 @@ def mbtiles_s3_server(
         logger,
         port,
         mbtiles,
+        http_access_control_allow_origin,
 ):
     server = None
     http_client = httpx.Client()
@@ -124,6 +125,12 @@ def mbtiles_s3_server(
         return Response(status=200, content_type=static_dict['mime'],
                         response=static_dict['bytes'])
 
+    @app.after_request
+    def _add_headers(resp):
+        if http_access_control_allow_origin:
+            resp.headers['access-control-allow-origin'] = http_access_control_allow_origin
+        return resp
+
     app.add_url_rule('/v1/tiles/<string:identifier>/<int:z>/<int:x>/<int:y>', view_func=get_tile)
     app.add_url_rule('/v1/styles/<string:identifier>.json', view_func=get_styles)
     app.add_url_rule('/v1/static/<string:identifier>', view_func=get_static)
@@ -216,6 +223,7 @@ def main():
         logger,
         int(os.environ['PORT']),
         env['MBTILES'],
+        env.get('HTTP_ACCESS_CONTROL_ALLOW_ORIGIN'),
     )
 
     gevent.signal_handler(signal.SIGTERM, stop)
