@@ -10,7 +10,7 @@ Versioning must be enabled on the underlying S3 bucket
 
 ## Why does this exist?
 
-Hosting your own vector map tiles and then showing them in a browser has quite a few moving parts, and this project attempts to make it as straightforward as possible - for example by providing reasonable defaults which can then be overridden. A core feature of this server is that S3 is leveraged wherever possible, which allows for updates without a re-deployment.
+Hosting your own vector map tiles and then showing them in a browser has quite a few moving parts, and this project attempts to make it as straightforward as possible.
 
 The components are:
 
