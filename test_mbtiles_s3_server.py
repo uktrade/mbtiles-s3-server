@@ -130,9 +130,17 @@ def test_tile_file_does_not_exists(processes):
 
 
 def test_styles_file(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/styles/positron-gl-style.json')
+    response = httpx.get('http://127.0.0.1:8080/v1/styles/positron-gl-style.json?tiles=mytiles')
     assert response.status_code == 200
-    assert json.loads(response.content)['name'] == 'Positron'
+
+    style_dict = json.loads(response.content)
+    assert style_dict['name'] == 'Positron'
+    assert style_dict['sources'] == {
+        'openmaptiles': {
+            'type': 'vector',
+            'tiles': ['http://127.0.0.1:8080//tiles/mytiles/{z}/{x}/{y}'],
+        },
+    }
 
 
 def test_styles_file_does_not_exists(processes):

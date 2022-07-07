@@ -4,6 +4,7 @@ from gevent import (
 monkey.patch_all()
 
 import itertools
+import json
 import logging
 import os
 import signal
@@ -16,6 +17,7 @@ from gevent.pywsgi import (
 from flask import (
     Flask,
     Response,
+    request,
 )
 import httpx
 from sqlite_s3_query import sqlite_s3_query
@@ -56,13 +58,13 @@ def mbtiles_s3_server(
         FROM
             tiles
         WHERE
+            zoom_level=? AND
             tile_column=? AND
-            tile_row=? AND
-            zoom_level=?
+            tile_row=?
         LIMIT 1
     '''
 
-    def get_tile(identifier, x, y, z):
+    def get_tile(identifier, z, x, y):
         try:
             mbtiles_url = mbtiles_dict[identifier]['URL']
         except KeyError:
@@ -71,7 +73,7 @@ def mbtiles_s3_server(
         tile_data = None
         with \
                 sqlite_s3_query(url=mbtiles_url, get_http_client=lambda: http_client) as query, \
-                query(sql, params=(x, y, z)) as (columns, rows):
+                query(sql, params=(z, x, y)) as (columns, rows):
 
             for row in rows:
                 tile_data = row[0]
@@ -82,12 +84,27 @@ def mbtiles_s3_server(
 
     def get_styles(identifier):
         try:
-            return Response(status=200, content_type='application/json',
-                            response=styles_dict[identifier])
+            style_bytes = styles_dict[identifier]
         except KeyError:
             return Response(status=404)
 
-    app.add_url_rule('/v1/tiles/<string:identifier>/<int:x>/<int:y>/<int:z>', view_func=get_tile)
+        try:
+            tiles_identifier = request.args['tiles']
+        except KeyError:
+            return Response(status=400)
+
+        style_dict = json.loads(style_bytes)
+        style_dict['sources']['openmaptiles'] = {
+            'type': 'vector',
+            'tiles': [
+                request.url_root + '/tiles/' + tiles_identifier + '/{z}/{x}/{y}'
+            ],
+        }
+
+        return Response(status=200, content_type='application/json',
+                        response=json.dumps(style_dict))
+
+    app.add_url_rule('/v1/tiles/<string:identifier>/<int:z>/<int:x>/<int:y>', view_func=get_tile)
     app.add_url_rule('/v1/styles/<string:identifier>.json', view_func=get_styles)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)
 
