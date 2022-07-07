@@ -12,15 +12,27 @@ Versioning must be enabled on the underlying S3 bucket
 
 Hosting your own vector map tiles and then showing them in a browser has quite a few moving parts, and this project attempts to make it as straightforward as possible - for example by providing reasonable defaults which can then be overridden. A core feature of this server is that S3 is leveraged wherever possible, which allows for updates without a re-deployment.
 
-1. JavaScript
+The components are:
 
-2. Style file
+1. **JavaScript**
 
-3. Vector map tile file
+   A library such as [MapLibre GL](https://github.com/maplibre/maplibre-gl-js), and your own code to run the library, and point it to a style file
 
-4. Font files
+2. **Style file**
 
-5. Glphs
+   A JSON file that tells the library how to find the map tiles, how to style them, how to find to glyphs (fonts), and how to find the sprite
+
+3. **Glyphs** (fonts)
+
+   Sets of fonts; the style file specified which font is used for what sort of label or zoom levels
+
+4. **Sprite**
+
+   A single JSON index file with URLs to and offsets in image files; the style file determines when these are used
+
+5. **Vector map tiles**
+
+   A set of often hundreds of thousands of tiles each covering a different location and different zoom level. These can be distributed as a single mbtiles file, but this is not the format that the Javascript library accepts. This on-the-fly conversion from the mbtiles file to tiles is the main feature of this server.
 
 
 ## Installation
