@@ -5,3 +5,5 @@ concurrency =
     multiprocessing
     gevent
 source = .
+omit =
+    setup.py
