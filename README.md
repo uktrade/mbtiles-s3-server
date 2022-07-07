@@ -5,7 +5,7 @@ Python server to on-the-fly extract and serve vector tiles from mbtiles files on
 
 Versioning must be enabled on the underlying S3 bucket
 
-> Work in progress. Not all features below are implemented. This document serves as a rough design spec.
+> Work in progress. Not all features described are implemented. This document serves as a rough design spec.
 
 
 ## Installation
