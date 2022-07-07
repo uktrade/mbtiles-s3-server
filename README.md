@@ -25,5 +25,6 @@ AWS_S3_MBTILES_URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
 AWS_REGION=eu-west-2 \
 AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE \
 AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
+AWS_SESSION_TOKEN="Only needed for temporary credentials" \
     python -m mbtiles_s3_server
 ```
