@@ -35,10 +35,12 @@ def mbtiles_s3_server(
     app = Flask('app')
 
     def get_tile():
-        with sqlite_s3_query(url=mbtiles_url) as query:
-            with query('SELECT * FROM sqlite_master', params=()) as (columns, rows):
-                for row in rows:
-                    pass
+        with \
+                sqlite_s3_query(url=mbtiles_url) as query, \
+                query('SELECT * FROM sqlite_master', params=()) as (columns, rows):
+
+            for row in rows:
+                pass
 
         return Response()
 
