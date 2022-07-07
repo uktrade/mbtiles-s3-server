@@ -97,11 +97,17 @@ def fixture_processes():
         yield (processes, outputs)
 
 
-def test_server(processes):
+def test_tile_exists(processes):
     response = httpx.get('http://127.0.0.1:8080/0/0/0')
     response.raise_for_status()
 
+    assert response.status_code == 200
     assert len(response.content) > 1000
+
+
+def test_tile_does_not_exists(processes):
+    response = httpx.get('http://127.0.0.1:8080/9999/9999/9999')
+    assert response.status_code == 404
 
 
 def put_object_no_raise(key, contents, params=()):

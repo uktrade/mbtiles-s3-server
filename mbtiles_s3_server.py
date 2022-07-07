@@ -49,6 +49,7 @@ def mbtiles_s3_server(
     '''
 
     def get_tile(x, y, z):
+        tile_data = None
         with \
                 sqlite_s3_query(url=mbtiles_url, get_http_client=lambda: http_client) as query, \
                 query(sql, params=(x, y, z)) as (columns, rows):
@@ -56,7 +57,9 @@ def mbtiles_s3_server(
             for row in rows:
                 tile_data = row[0]
 
-        return Response(response=tile_data)
+        return \
+            Response(status=200, response=tile_data) if tile_data is not None else \
+            Response(status=404)
 
     app.add_url_rule('/<int:x>/<int:y>/<int:z>', view_func=get_tile)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)
