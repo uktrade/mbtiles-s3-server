@@ -1,17 +1,105 @@
+from contextlib import contextmanager
 from datetime import datetime
 import hashlib
 import hmac
+import os
+import socket
+import subprocess
+import tempfile
+import time
 import urllib
+from xml.etree import (
+    ElementTree as ET,
+)
 
-from mbtiles_s3_server import server
 import httpx
+import pytest
 
 
-def test_server():
-    put_object_no_raise('', b'')  # Ensure bucket is created
+@contextmanager
+def application(port=8080, max_attempts=500, aws_access_key_id='AKIAIOSFODNN7EXAMPLE'):
+    outputs = {}
+
+    put_object_no_raise('', b'')  # Ensures bucket created
+    put_object('', '''
+        <VersioningConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+            <Status>Enabled</Status>
+        </VersioningConfiguration>
+    '''.encode(), params=(('versioning', ''),))
+    delete_all_objects()
     with open('counties.mbtiles', 'rb') as f:
         put_object('counties.mbtiles', f.read())
-    server()
+
+    process_definitions = {
+        'web': ['python', '-m', 'mbtiles_s3_server']
+    }
+
+    process_outs = {
+        name: (tempfile.NamedTemporaryFile(), tempfile.NamedTemporaryFile())
+        for name, _ in process_definitions.items()
+    }
+
+    processes = {
+        name: subprocess.Popen(
+            args,
+            stdout=process_outs[name][0],
+            stderr=process_outs[name][1],
+            env={
+                **os.environ,
+                'PORT': str(port),
+                'AWS_ACCESS_KEY_ID': aws_access_key_id,
+                'AWS_SECRET_ACCESS_KEY': (
+                    'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
+                ),
+                'AWS_REGION': 'us-east-1',
+                'AWS_S3_MBTILES_URL': 'http://127.0.0.1:9000/my-bucket/counties.mbtiles',
+            }
+        )
+        for name, args in process_definitions.items()
+    }
+
+    def read_and_close(f):
+        f.seek(0)
+        contents = f.read()
+        f.close()
+        return contents
+
+    def stop():
+        for _, process in processes.items():
+            process.terminate()
+        for _, process in processes.items():
+            process.wait(timeout=10)
+        output_errors = {
+            name: (read_and_close(stdout), read_and_close(stderr))
+            for name, (stdout, stderr) in process_outs.items()
+        }
+        return output_errors
+
+    try:
+        for i in range(0, max_attempts):
+            try:
+                with socket.create_connection(('127.0.0.1', port), timeout=0.1):
+                    break
+            except (OSError, ConnectionRefusedError):
+                if i == max_attempts - 1:
+                    raise
+                time.sleep(0.02)
+
+        yield (processes, outputs)
+    finally:
+        outputs.update(stop())
+        delete_all_objects()
+
+
+@pytest.fixture(name='processes')
+def fixture_processes():
+    with application() as (processes, outputs):
+        yield (processes, outputs)
+
+
+def test_server(processes):
+    response = httpx.get('http://127.0.0.1:8080/')
+    response.raise_for_status()
 
 
 def put_object_no_raise(key, contents, params=()):
@@ -37,6 +125,66 @@ def put_object(key, contents, params=()):
     )
     response = httpx.put(url, params=params, data=contents, headers=dict(headers))
     response.raise_for_status()
+
+
+def delete_all_objects():
+    def list_keys():
+        url = 'http://127.0.0.1:9000/my-bucket/'
+        parsed_url = urllib.parse.urlsplit(url)
+        namespace = '{http://s3.amazonaws.com/doc/2006-03-01/}'
+        key_marker = ''
+        version_marker = ''
+
+        def _list(extra_query_items=()):
+            nonlocal key_marker, version_marker
+
+            key_marker = ''
+            version_marker = ''
+            query = (
+                ('max-keys', '1000'),
+                ('versions', ''),
+            ) + extra_query_items
+
+            body = b''
+            body_hash = hashlib.sha256(body).hexdigest()
+            headers = aws_sigv4_headers(
+                'AKIAIOSFODNN7EXAMPLE', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+                (), 's3', 'us-east-1', parsed_url.netloc, 'GET', parsed_url.path, query, body_hash,
+            )
+            response = httpx.get(url, params=query, headers=dict(headers))
+            response.raise_for_status()
+            body_bytes = response.content
+
+            for element in ET.fromstring(body_bytes):
+                if element.tag in (f'{namespace}Version', f'{namespace}DeleteMarker'):
+                    for child in element:
+                        if child.tag == f'{namespace}Key':
+                            key = child.text
+                        if child.tag == f'{namespace}VersionId':
+                            version_id = child.text
+                    yield key, version_id
+                if element.tag == f'{namespace}NextKeyMarker':
+                    key_marker = element.text
+                if element.tag == f'{namespace}NextVersionMarker':
+                    version_marker = element.text
+
+        yield from _list()
+
+        while key_marker:
+            yield from _list((('key-marker', key_marker), ('version-marker', version_marker)))
+
+    for key, version_id in list_keys():
+        url = f'http://127.0.0.1:9000/my-bucket/{key}'
+        params = (('versionId', version_id),)
+        parsed_url = urllib.parse.urlsplit(url)
+        body = b''
+        body_hash = hashlib.sha256(body).hexdigest()
+        headers = aws_sigv4_headers(
+            'AKIAIOSFODNN7EXAMPLE', 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
+            (), 's3', 'us-east-1', parsed_url.netloc, 'DELETE', parsed_url.path, params, body_hash,
+        )
+        response = httpx.delete(url, params=params, headers=dict(headers))
+        response.raise_for_status()
 
 
 def aws_sigv4_headers(access_key_id, secret_access_key, pre_auth_headers,

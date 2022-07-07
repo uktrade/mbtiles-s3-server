@@ -21,7 +21,9 @@ setuptools.setup(
     ],
     python_requires='>=3.5.0',
     install_requires=[
+        'flask>=2.1.2',
         'gevent>=21.12.0',
+        'sqlite-s3-query>=0.0.67',
     ],
     py_modules=[
         'mbtiles_s3_server',
