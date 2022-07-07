@@ -33,6 +33,15 @@ def mbtiles_s3_server(
         for mbtile in mbtiles
     }
 
+    def read(path):
+        real_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+        with open(real_path, 'rb') as f:
+            return f.read()
+
+    styles_dict = {
+        'positron-gl-style': read('mbtiles_s3_server/vendor/positron-gl-style/style.json'),
+    }
+
     def start():
         server.serve_forever()
 
@@ -71,7 +80,15 @@ def mbtiles_s3_server(
             Response(status=200, response=tile_data) if tile_data is not None else \
             Response(status=404)
 
+    def get_styles(identifier):
+        try:
+            return Response(status=200, content_type='application/json',
+                            response=styles_dict[identifier])
+        except KeyError:
+            return Response(status=404)
+
     app.add_url_rule('/v1/tiles/<string:identifier>/<int:x>/<int:y>/<int:z>', view_func=get_tile)
+    app.add_url_rule('/v1/styles/<string:identifier>.json', view_func=get_styles)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)
 
     return start, stop

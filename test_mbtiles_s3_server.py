@@ -2,6 +2,7 @@ from contextlib import contextmanager
 from datetime import datetime
 import hashlib
 import hmac
+import json
 import os
 import socket
 import subprocess
@@ -125,6 +126,17 @@ def test_tile_does_not_exists(processes):
 
 def test_tile_file_does_not_exists(processes):
     response = httpx.get('http://127.0.0.1:8080/v1/tiles/notmytiles/0/0/0')
+    assert response.status_code == 404
+
+
+def test_styles_file(processes):
+    response = httpx.get('http://127.0.0.1:8080/v1/styles/positron-gl-style.json')
+    assert response.status_code == 200
+    assert json.loads(response.content)['name'] == 'Positron'
+
+
+def test_styles_file_does_not_exists(processes):
+    response = httpx.get('http://127.0.0.1:8080/v1/styles/notmystyles.json')
     assert response.status_code == 404
 
 

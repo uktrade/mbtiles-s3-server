@@ -16,3 +16,4 @@ repos:
     - id: debug-statements
     - id: double-quote-string-fixer
     - id: end-of-file-fixer
+exclude: ^mbtiles_s3_server/vendor/
