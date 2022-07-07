@@ -50,7 +50,8 @@ The server is configured using environment variables.
 
 ```bash
 PORT=8080 \
-AWS_S3_MBTILES_URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
+MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
+MBTILES__1__IDENTIFIER=mytiles \
 AWS_REGION=eu-west-2 \
 AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE \
 AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \

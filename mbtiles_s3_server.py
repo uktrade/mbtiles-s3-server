@@ -3,6 +3,7 @@ from gevent import (
 )
 monkey.patch_all()
 
+import itertools
 import logging
 import os
 import signal
@@ -23,10 +24,14 @@ from sqlite_s3_query import sqlite_s3_query
 def mbtiles_s3_server(
         logger,
         port,
-        mbtiles_url,
+        mbtiles,
 ):
     server = None
     http_client = httpx.Client()
+    mbtiles_dict = {
+        mbtile['IDENTIFIER']: mbtile
+        for mbtile in mbtiles
+    }
 
     def start():
         server.serve_forever()
@@ -48,7 +53,12 @@ def mbtiles_s3_server(
         LIMIT 1
     '''
 
-    def get_tile(x, y, z):
+    def get_tile(identifier, x, y, z):
+        try:
+            mbtiles_url = mbtiles_dict[identifier]['URL']
+        except KeyError:
+            return Response(status=404)
+
         tile_data = None
         with \
                 sqlite_s3_query(url=mbtiles_url, get_http_client=lambda: http_client) as query, \
@@ -61,10 +71,82 @@ def mbtiles_s3_server(
             Response(status=200, response=tile_data) if tile_data is not None else \
             Response(status=404)
 
-    app.add_url_rule('/<int:x>/<int:y>/<int:z>', view_func=get_tile)
+    app.add_url_rule('/v1/tiles/<string:identifier>/<int:x>/<int:y>/<int:z>', view_func=get_tile)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)
 
     return start, stop
+
+
+def normalise_environment(key_values):
+    # Separator is chosen to
+    # - show the structure of variables fairly easily;
+    # - avoid problems, since underscores are usual in environment variables
+    separator = '__'
+
+    def get_first_component(key):
+        return key.split(separator)[0]
+
+    def get_later_components(key):
+        return separator.join(key.split(separator)[1:])
+
+    without_more_components = {
+        key: value
+        for key, value in key_values.items()
+        if not get_later_components(key)
+    }
+
+    with_more_components = {
+        key: value
+        for key, value in key_values.items()
+        if get_later_components(key)
+    }
+
+    def grouped_by_first_component(items):
+        def by_first_component(item):
+            return get_first_component(item[0])
+
+        # groupby requires the items to be sorted by the grouping key
+        return itertools.groupby(
+            sorted(items, key=by_first_component),
+            by_first_component,
+        )
+
+    def items_with_first_component(items, first_component):
+        return {
+            get_later_components(key): value
+            for key, value in items
+            if get_first_component(key) == first_component
+        }
+
+    nested_structured_dict = {
+        **without_more_components, **{
+            first_component: normalise_environment(
+                items_with_first_component(items, first_component))
+            for first_component, items in grouped_by_first_component(with_more_components.items())
+        }}
+
+    def all_keys_are_ints():
+        def is_int(string):
+            try:
+                int(string)
+                return True
+            except ValueError:
+                return False
+
+        return all([is_int(key) for key, value in nested_structured_dict.items()])
+
+    def list_sorted_by_int_key():
+        return [
+            value
+            for key, value in sorted(
+                nested_structured_dict.items(),
+                key=lambda key_value: int(key_value[0])
+            )
+        ]
+
+    return \
+        list_sorted_by_int_key() if all_keys_are_ints() else \
+        nested_structured_dict
 
 
 def main():
@@ -73,10 +155,12 @@ def main():
     handler = logging.StreamHandler(sys.stdout)
     logger.addHandler(handler)
 
+    env = normalise_environment(os.environ)
+
     start, stop = mbtiles_s3_server(
         logger,
         int(os.environ['PORT']),
-        os.environ['AWS_S3_MBTILES_URL'],
+        env['MBTILES'],
     )
 
     gevent.signal_handler(signal.SIGTERM, stop)

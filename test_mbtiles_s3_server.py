@@ -42,8 +42,8 @@ def application(port=8080, max_attempts=500, aws_access_key_id='AKIAIOSFODNN7EXA
     processes = {
         name: subprocess.Popen(
             args,
-            stdout=process_outs[name][0],
-            stderr=process_outs[name][1],
+            # stdout=process_outs[name][0],
+            # stderr=process_outs[name][1],
             env={
                 **os.environ,
                 'PORT': str(port),
@@ -52,7 +52,8 @@ def application(port=8080, max_attempts=500, aws_access_key_id='AKIAIOSFODNN7EXA
                     'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
                 ),
                 'AWS_REGION': 'us-east-1',
-                'AWS_S3_MBTILES_URL': 'http://127.0.0.1:9000/my-bucket/counties.mbtiles',
+                'MBTILES__1__URL': 'http://127.0.0.1:9000/my-bucket/counties.mbtiles',
+                'MBTILES__1__IDENTIFIER': 'mytiles',
             }
         )
         for name, args in process_definitions.items()
@@ -110,7 +111,7 @@ def test_meta_put_many_objects():
 
 
 def test_tile_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/0/0/0')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles/0/0/0')
     response.raise_for_status()
 
     assert response.status_code == 200
@@ -118,7 +119,12 @@ def test_tile_exists(processes):
 
 
 def test_tile_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/9999/9999/9999')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles/9999/9999/9999')
+    assert response.status_code == 404
+
+
+def test_tile_file_does_not_exists(processes):
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/notmytiles/0/0/0')
     assert response.status_code == 404
 
 
