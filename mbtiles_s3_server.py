@@ -36,17 +36,29 @@ def mbtiles_s3_server(
 
     app = Flask('app')
 
-    def get_tile():
+    sql = '''
+        SELECT
+            tile_data
+        FROM
+            tiles
+        WHERE
+            tile_column=? AND
+            tile_row=? AND
+            zoom_level=?
+        LIMIT 1
+    '''
+
+    def get_tile(x, y, z):
         with \
                 sqlite_s3_query(url=mbtiles_url, get_http_client=lambda: http_client) as query, \
-                query('SELECT * FROM sqlite_master', params=()) as (columns, rows):
+                query(sql, params=(x, y, z)) as (columns, rows):
 
             for row in rows:
-                pass
+                tile_data = row[0]
 
-        return Response()
+        return Response(response=tile_data)
 
-    app.add_url_rule('/', view_func=get_tile)
+    app.add_url_rule('/<int:x>/<int:y>/<int:z>', view_func=get_tile)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)
 
     return start, stop

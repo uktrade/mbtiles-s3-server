@@ -98,8 +98,10 @@ def fixture_processes():
 
 
 def test_server(processes):
-    response = httpx.get('http://127.0.0.1:8080/')
+    response = httpx.get('http://127.0.0.1:8080/0/0/0')
     response.raise_for_status()
+
+    assert len(response.content) > 1000
 
 
 def put_object_no_raise(key, contents, params=()):
