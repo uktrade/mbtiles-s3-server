@@ -3,7 +3,24 @@
 
 Python server to on-the-fly extract and serve vector tiles from a single mbtiles file on S3. This avoids having to have an mbtiles file locally on the server, and means that the update of the tiles can be done by replacing a single object in S3.
 
-Versioning must be enabled on the underlying S3 bucket.
+Versioning must be enabled on the underlying S3 bucket
+
+> Work in progress. Not all features below are implemented. This document serves as a rough design spec.
+
+
+## What does this do?
+
+Hosting your own vector map tiles and then showing them in a browser has quite a few moving parts, and this projects attempts to make it as straightforward as possible - for example by providing reasonable defaults which can then be overridden. S3 is leveraged wherever possible, which allows for updates without a re-deployment of the server.
+
+1. JavaScript
+
+2. Style file
+
+3. Vector map tile file
+
+4. Font files
+
+5. Glphs
 
 
 ## Installation
@@ -28,3 +45,7 @@ AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
 AWS_SESSION_TOKEN="Only needed for temporary credentials" \
     python -m mbtiles_s3_server
 ```
+
+## Licenses
+
+The code of the server itself is released under the MIT license. However, several components included are released under separate licenses.
