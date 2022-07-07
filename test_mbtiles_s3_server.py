@@ -103,6 +103,12 @@ def test_meta_application_fails():
         application(max_attempts=1).__enter__()
 
 
+def test_meta_put_many_objects():
+    # Ensure code coverage on deleting of > 1000 objects
+    for i in range(0, 1100):
+        put_object(str(i), b'-')
+
+
 def test_tile_exists(processes):
     response = httpx.get('http://127.0.0.1:8080/0/0/0')
     response.raise_for_status()
