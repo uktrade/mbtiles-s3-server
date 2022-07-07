@@ -18,6 +18,7 @@ setuptools.setup(
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: BSD License',
     ],
     python_requires='>=3.5.0',
     install_requires=[
