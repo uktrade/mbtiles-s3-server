@@ -3,7 +3,7 @@ from gevent import (
 )
 monkey.patch_all()
 
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 import itertools
 import json
 import logging
@@ -26,12 +26,14 @@ from sqlite_s3_query import sqlite_s3_query
 
 def mbtiles_s3_server(
         logger,
-        http_client,
+        exit_stack,
         port,
         mbtiles,
         http_access_control_allow_origin,
 ):
     server = None
+
+    http_client = exit_stack.enter_context(httpx.Client())
 
     # So we can share a single http client (i.e. a single pool of connections) for
     # all instances of sqlite_s3_query
@@ -246,10 +248,10 @@ def main():
 
     env = normalise_environment(os.environ)
 
-    with httpx.Client() as http_client:
+    with ExitStack() as exit_stack:
         start, stop = mbtiles_s3_server(
             logger,
-            http_client,
+            exit_stack,
             int(os.environ['PORT']),
             env['MBTILES'],
             env.get('HTTP_ACCESS_CONTROL_ALLOW_ORIGIN'),
