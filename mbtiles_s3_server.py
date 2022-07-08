@@ -191,7 +191,6 @@ def mbtiles_s3_server(
                 for font in stack.split(',')
             ))
         except FileNotFoundError:
-            print('C', identifier, version, stack, range)
             return Response(status=404)
 
         return Response(status=200, response=font_bytes)
