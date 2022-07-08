@@ -19,7 +19,7 @@ The libsqlite3 binary library is also required, but this is typically already in
 
 ## Example usage
 
-1. Obtain or create an mbtiles file, for example from https://openmaptiles.org/.
+1. Creat or obtain an mbtiles file, for example from https://openmaptiles.org/.
 
 2. Upload this file to S3, for example to `https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles`
 
