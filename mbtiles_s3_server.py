@@ -3,6 +3,7 @@ from gevent import (
 )
 monkey.patch_all()
 
+from contextlib import contextmanager
 import itertools
 import json
 import logging
@@ -25,12 +26,18 @@ from sqlite_s3_query import sqlite_s3_query
 
 def mbtiles_s3_server(
         logger,
+        http_client,
         port,
         mbtiles,
         http_access_control_allow_origin,
 ):
     server = None
-    http_client = httpx.Client()
+
+    # So we can share a single http client (i.e. a single pool of connections) for
+    # all instances of sqlite_s3_query
+    @contextmanager
+    def get_http_client():
+        yield http_client
 
     def read(path):
         real_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
@@ -87,7 +94,7 @@ def mbtiles_s3_server(
         y_tms = (2**z - 1) - y
 
         with \
-                sqlite_s3_query(url=mbtiles_url, get_http_client=lambda: http_client) as query, \
+                sqlite_s3_query(url=mbtiles_url, get_http_client=get_http_client) as query, \
                 query(sql, params=(z, x, y_tms)) as (columns, rows):
 
             for row in rows:
@@ -239,16 +246,19 @@ def main():
 
     env = normalise_environment(os.environ)
 
-    start, stop = mbtiles_s3_server(
-        logger,
-        int(os.environ['PORT']),
-        env['MBTILES'],
-        env.get('HTTP_ACCESS_CONTROL_ALLOW_ORIGIN'),
-    )
+    with httpx.Client() as http_client:
+        start, stop = mbtiles_s3_server(
+            logger,
+            http_client,
+            int(os.environ['PORT']),
+            env['MBTILES'],
+            env.get('HTTP_ACCESS_CONTROL_ALLOW_ORIGIN'),
+        )
 
-    gevent.signal_handler(signal.SIGTERM, stop)
-    start()
-    gevent.get_hub().join()
+        gevent.signal_handler(signal.SIGTERM, stop)
+        start()
+        gevent.get_hub().join()
+
     logger.info('Shut down gracefully')
 
 
