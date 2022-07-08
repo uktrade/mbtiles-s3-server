@@ -10,6 +10,8 @@ import logging
 import os
 import signal
 import sys
+import tarfile
+import tempfile
 
 import gevent
 from gevent.pywsgi import (
@@ -46,6 +48,13 @@ def mbtiles_s3_server(
         with open(real_path, 'rb') as f:
             return f.read()
 
+    def extract(path):
+        tempdir = exit_stack.enter_context(tempfile.TemporaryDirectory())
+        real_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), path)
+        with tarfile.open(real_path, 'r:gz') as f:
+            f.extractall(tempdir)
+        return tempdir
+
     mbtiles_dict = {
         (mbtile['IDENTIFIER'], mbtile['VERSION']): mbtile
         for mbtile in mbtiles
@@ -55,6 +64,7 @@ def mbtiles_s3_server(
         ('positron-gl-style', '1.8', 'style.json'):
         read('mbtiles_s3_server/vendor/positron-gl-style@1.8/style.json'),
     }
+
     statics_dict = {
         ('maplibre-gl', '2.1.9', 'maplibre-gl.css'): {
             'bytes': read('mbtiles_s3_server/vendor/maplibre-gl@2.1.9/maplibre-gl.css'),
@@ -64,6 +74,10 @@ def mbtiles_s3_server(
             'bytes': read('mbtiles_s3_server/vendor/maplibre-gl@2.1.9/maplibre-gl.js'),
             'mime': 'application/javascript',
         },
+    }
+
+    fonts_dict = {
+        ('fonts-gl', '2.0'): extract('mbtiles_s3_server/vendor/fonts-gl@2.0/fonts.tar.gz')
     }
 
     def start():
@@ -141,6 +155,30 @@ def mbtiles_s3_server(
         return Response(status=200, content_type='application/json',
                         response=json.dumps(style_dict))
 
+    def get_fonts(identifier, version, stack, range):
+        try:
+            font_path = fonts_dict[(identifier, version)]
+        except KeyError:
+            return Response(status=404)
+
+        if '.' in stack or '.' in range:
+            return Response(status=404)
+
+        def read(path):
+            with open(path, 'rb') as f:
+                return f.read()
+
+        try:
+            font_bytes = b''.join((
+                read(os.path.join(font_path, font, range + '.pbf'))
+                for font in stack.split(',')
+            ))
+        except FileNotFoundError:
+            print('C', identifier, version, stack, range)
+            return Response(status=404)
+
+        return Response(status=200, response=font_bytes)
+
     def get_static(identifier, version, file):
         try:
             static_dict = statics_dict[(identifier, version, file)]
@@ -161,6 +199,9 @@ def mbtiles_s3_server(
         view_func=get_tile)
     app.add_url_rule(
         '/v1/styles/<string:identifier>@<string:version>/<string:file>', view_func=get_styles)
+    app.add_url_rule(
+        '/v1/fonts/<string:identifier>@<string:version>/<string:stack>/<string:range>.pbf',
+        view_func=get_fonts)
     app.add_url_rule(
         '/v1/static/<string:identifier>@<string:version>/<string:file>', view_func=get_static)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)

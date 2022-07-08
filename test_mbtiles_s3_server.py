@@ -183,6 +183,19 @@ def test_static_file_not_exist(processes):
     assert response.status_code == 404
 
 
+def test_font_file(processes):
+    response = httpx.get('http://127.0.0.1:8080/v1/fonts/fonts-gl@2.0/Metropolis Black/0-255.pbf')
+    assert response.status_code == 200
+    assert len(response.content) > 1000
+
+
+def test_font_files(processes):
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/fonts/fonts-gl@2.0/Metropolis Black,Noto Sans Regular/0-255.pbf')
+    assert response.status_code == 200
+    assert len(response.content) > 1000
+
+
 def put_object_no_raise(key, contents, params=()):
     url = f'http://127.0.0.1:9000/my-bucket/{key}'
     body_hash = hashlib.sha256(contents).hexdigest()
