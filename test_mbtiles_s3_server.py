@@ -125,7 +125,7 @@ def test_tile_exists(processes):
 
 
 def test_tile_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/9999/9999/9999')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/1/9999/9999')
     assert response.status_code == 404
 
 

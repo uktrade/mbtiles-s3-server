@@ -84,9 +84,11 @@ def mbtiles_s3_server(
             return Response(status=404)
 
         tile_data = None
+        y_tms = (2**z - 1) - y
+
         with \
                 sqlite_s3_query(url=mbtiles_url, get_http_client=lambda: http_client) as query, \
-                query(sql, params=(z, x, y)) as (columns, rows):
+                query(sql, params=(z, x, y_tms)) as (columns, rows):
 
             for row in rows:
                 tile_data = row[0]
