@@ -8,7 +8,7 @@ def long_description():
 
 setuptools.setup(
     name='mbtiles-s3-server',
-    version='0.0.1',
+    version='0.0.2',
     author='Department for International Trade',
     author_email='sre@digital.trade.gov.uk',
     description='Server to on-the-fly extract and serve vector tiles from an mbtiles file on S3',
