@@ -45,7 +45,7 @@ The libsqlite3 binary library is also required, but this is typically already in
    }   
    ```
 
-4. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables
+4. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables. You can assign the tiles file any version you like, in this case, `1.0`.
 
    ```bash
    PORT=8080 \
@@ -60,7 +60,7 @@ The libsqlite3 binary library is also required, but this is typically already in
        python -m mbtiles_s3_server
    ```
 
-5. On your user-facing site, include HTML that loads a map from this server, for example
+5. On your user-facing site, include HTML that loads these tiles from this server, for example
 
    ```html
    <!DOCTYPE html>
