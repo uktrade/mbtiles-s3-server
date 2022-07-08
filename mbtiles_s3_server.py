@@ -134,7 +134,7 @@ def mbtiles_s3_server(
         style_dict['sources']['openmaptiles'] = {
             'type': 'vector',
             'tiles': [
-                request.url_root + 'v1/tiles/' + tiles_identifier_with_version + '/{z}/{x}/{y}'
+                request.url_root + 'v1/tiles/' + tiles_identifier_with_version + '/{z}/{x}/{y}.mvt'
             ],
         }
 
@@ -157,7 +157,7 @@ def mbtiles_s3_server(
         return resp
 
     app.add_url_rule(
-        '/v1/tiles/<string:identifier>@<string:version>/<int:z>/<int:x>/<int:y>',
+        '/v1/tiles/<string:identifier>@<string:version>/<int:z>/<int:x>/<int:y>.mvt',
         view_func=get_tile)
     app.add_url_rule(
         '/v1/styles/<string:identifier>@<string:version>/<string:file>', view_func=get_styles)

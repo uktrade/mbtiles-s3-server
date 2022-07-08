@@ -116,7 +116,7 @@ def test_meta_put_many_objects(processes):
 
 
 def test_tile_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/0/0/0')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/0/0/0.mvt')
     response.raise_for_status()
 
     assert response.headers['access-control-allow-origin'] == 'https://my.test/'
@@ -125,12 +125,12 @@ def test_tile_exists(processes):
 
 
 def test_tile_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/1/9999/9999')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/1/9999/9999.mvt')
     assert response.status_code == 404
 
 
 def test_tile_file_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/notmytiles@1.1/0/0/0')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/notmytiles@1.1/0/0/0.mvt')
     assert response.status_code == 404
 
 
@@ -144,7 +144,7 @@ def test_styles_file(processes):
     assert style_dict['sources'] == {
         'openmaptiles': {
             'type': 'vector',
-            'tiles': ['http://127.0.0.1:8080/v1/tiles/mytiles@1.1/{z}/{x}/{y}'],
+            'tiles': ['http://127.0.0.1:8080/v1/tiles/mytiles@1.1/{z}/{x}/{y}.mvt'],
         },
     }
 
