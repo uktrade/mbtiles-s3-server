@@ -148,12 +148,14 @@ def test_styles_file(processes):
 
 
 def test_styles_file_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/styles@1.8/notmystyle.json?tiles=mytiles@1.1')
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/positron-gl-style@1.8/notmystyle.json?tiles=mytiles@1.1')
     assert response.status_code == 404
 
 
 def test_styles_file_with_tiles_that_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/styles@1.8/style.json?tiles=notmytiles@1.1')
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/positron-gl-style@1.8/style.json?tiles=notmytiles@1.1')
     assert response.status_code == 404
 
 
