@@ -102,15 +102,25 @@ def mbtiles_s3_server(
             return Response(status=404)
 
         try:
-            tiles_identifier = request.args['tiles']
+            tiles_identifier_with_version = request.args['tiles']
         except KeyError:
             return Response(status=400)
+
+        try:
+            tiles_identifier, tiles_version = tiles_identifier_with_version.split('@')
+        except ValueError:
+            return Response(status=400)
+
+        try:
+            mbtiles_dict[(tiles_identifier, tiles_version)]
+        except KeyError:
+            return Response(status=404)
 
         style_dict = json.loads(style_bytes)
         style_dict['sources']['openmaptiles'] = {
             'type': 'vector',
             'tiles': [
-                request.url_root + 'tiles/' + tiles_identifier + '/{z}/{x}/{y}'
+                request.url_root + 'tiles/' + tiles_identifier_with_version + '/{z}/{x}/{y}'
             ],
         }
 
