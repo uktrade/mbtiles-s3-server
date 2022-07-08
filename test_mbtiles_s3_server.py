@@ -55,6 +55,7 @@ def application(port=8080, max_attempts=500, aws_access_key_id='AKIAIOSFODNN7EXA
                 'AWS_REGION': 'us-east-1',
                 'MBTILES__1__URL': 'http://127.0.0.1:9000/my-bucket/counties.mbtiles',
                 'MBTILES__1__IDENTIFIER': 'mytiles',
+                'MBTILES__1__VERSION': '1.1',
                 'HTTP_ACCESS_CONTROL_ALLOW_ORIGIN': 'https://my.test/',
             }
         )
@@ -113,7 +114,7 @@ def test_meta_put_many_objects():
 
 
 def test_tile_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles/0/0/0')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/0/0/0')
     response.raise_for_status()
 
     assert response.headers['access-control-allow-origin'] == 'https://my.test/'
@@ -122,18 +123,18 @@ def test_tile_exists(processes):
 
 
 def test_tile_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles/9999/9999/9999')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/9999/9999/9999')
     assert response.status_code == 404
 
 
 def test_tile_file_does_not_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/notmytiles/0/0/0')
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/notmytiles@1.1/0/0/0')
     assert response.status_code == 404
 
 
 def test_styles_file(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=mytiles')
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=mytiles@1.1')
     assert response.status_code == 200
 
     style_dict = json.loads(response.content)
@@ -141,7 +142,7 @@ def test_styles_file(processes):
     assert style_dict['sources'] == {
         'openmaptiles': {
             'type': 'vector',
-            'tiles': ['http://127.0.0.1:8080/tiles/mytiles/{z}/{x}/{y}'],
+            'tiles': ['http://127.0.0.1:8080/tiles/mytiles@1.1/{z}/{x}/{y}'],
         },
     }
 

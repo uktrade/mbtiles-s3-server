@@ -38,7 +38,7 @@ def mbtiles_s3_server(
             return f.read()
 
     mbtiles_dict = {
-        mbtile['IDENTIFIER']: mbtile
+        (mbtile['IDENTIFIER'], mbtile['VERSION']): mbtile
         for mbtile in mbtiles
     }
 
@@ -77,9 +77,9 @@ def mbtiles_s3_server(
         LIMIT 1
     '''
 
-    def get_tile(identifier, z, x, y):
+    def get_tile(identifier, version, z, x, y):
         try:
-            mbtiles_url = mbtiles_dict[identifier]['URL']
+            mbtiles_url = mbtiles_dict[(identifier, version)]['URL']
         except KeyError:
             return Response(status=404)
 
@@ -132,7 +132,9 @@ def mbtiles_s3_server(
             resp.headers['access-control-allow-origin'] = http_access_control_allow_origin
         return resp
 
-    app.add_url_rule('/v1/tiles/<string:identifier>/<int:z>/<int:x>/<int:y>', view_func=get_tile)
+    app.add_url_rule(
+        '/v1/tiles/<string:identifier>@<string:version>/<int:z>/<int:x>/<int:y>',
+        view_func=get_tile)
     app.add_url_rule(
         '/v1/styles/<string:identifier>@<string:version>/<string:file>', view_func=get_styles)
     app.add_url_rule(
