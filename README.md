@@ -19,9 +19,11 @@ The libsqlite3 binary library is also required, but this is typically already in
 
 ## Example usage
 
-1. Upload an mbtiles file to S3, for example to `https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles`
+1. Obtain or create an mbtiles file, for example from https://openmaptiles.org/.
 
-2. Ensure to have a IAM user that has `s3:GetObject` and `s3:GetObjectVersion` permissions on this S3 object, for example
+2. Upload this file to S3, for example to `https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles`
+
+3. Ensure to have a IAM user that has `s3:GetObject` and `s3:GetObjectVersion` permissions on this S3 object, for example
 
    ```json
    {
@@ -43,7 +45,7 @@ The libsqlite3 binary library is also required, but this is typically already in
    }   
    ```
 
-3. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables
+4. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables
 
    ```bash
    PORT=8080 \
@@ -58,7 +60,7 @@ The libsqlite3 binary library is also required, but this is typically already in
        python -m mbtiles_s3_server
    ```
 
-4. On your user-facing site, include HTML that loads a map from this server, for example
+5. On your user-facing site, include HTML that loads a map from this server, for example
 
    ```html
    <!DOCTYPE html>
