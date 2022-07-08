@@ -167,7 +167,7 @@ def mbtiles_s3_server(
             ],
         }
         style_dict['glyphs'] = request.url_root + 'v1/fonts/' + \
-            fonts_identifier_with_version + '/{fontstack}{range}.pbf'
+            fonts_identifier_with_version + '/{fontstack}/{range}.pbf'
 
         return Response(status=200, content_type='application/json',
                         response=json.dumps(style_dict))

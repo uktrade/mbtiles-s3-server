@@ -150,7 +150,7 @@ def test_styles_file(processes):
         },
     }
     assert style_dict['glyphs'] == \
-        'http://127.0.0.1:8080/v1/fonts/fonts-gl@2.0/{fontstack}{range}.pbf'
+        'http://127.0.0.1:8080/v1/fonts/fonts-gl@2.0/{fontstack}/{range}.pbf'
 
 
 def test_styles_file_does_not_exists(processes):
