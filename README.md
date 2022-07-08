@@ -60,7 +60,7 @@ The libsqlite3 binary library is also required, but this is typically already in
        python -m mbtiles_s3_server
    ```
 
-5. On your user-facing site, include HTML that loads these tiles from this server, for example
+5. On your user-facing site, include HTML that loads these tiles from this server, for example to load maps from a server started as above running locally
 
    ```html
    <!DOCTYPE html>
