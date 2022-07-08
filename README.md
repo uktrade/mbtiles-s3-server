@@ -38,7 +38,7 @@ The libsqlite3 binary library is also required, but this is typically already in
                    "s3:GetObjectVersion"
                ],
                "Resource": [
-                   "arn:aws:s3:::my-bucke/tiles.mbtiles"
+                   "arn:aws:s3:::my-bucket/tiles.mbtiles"
                ]
            }
        ]
