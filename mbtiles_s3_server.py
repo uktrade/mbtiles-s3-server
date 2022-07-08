@@ -43,15 +43,16 @@ def mbtiles_s3_server(
     }
 
     styles_dict = {
-        'positron-gl-style': read('mbtiles_s3_server/vendor/positron-gl-style/style.json'),
+        ('positron-gl-style', '1.8', 'style.json'):
+        read('mbtiles_s3_server/vendor/positron-gl-style@1.8/style.json'),
     }
     statics_dict = {
-        'maplibre-gl.2.1.9.css': {
-            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl/maplibre-gl.2.1.9.css'),
+        ('maplibre-gl', '2.1.9', 'maplibre-gl.css'): {
+            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl@2.1.9/maplibre-gl.css'),
             'mime': 'text/css',
         },
-        'maplibre-gl.2.1.9.js': {
-            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl/maplibre-gl.2.1.9.js'),
+        ('maplibre-gl', '2.1.9', 'maplibre-gl.js'): {
+            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl@2.1.9/maplibre-gl.js'),
             'mime': 'application/javascript',
         },
     }
@@ -94,9 +95,9 @@ def mbtiles_s3_server(
             Response(status=200, response=tile_data) if tile_data is not None else \
             Response(status=404)
 
-    def get_styles(identifier):
+    def get_styles(identifier, version, file):
         try:
-            style_bytes = styles_dict[identifier]
+            style_bytes = styles_dict[(identifier, version, file)]
         except KeyError:
             return Response(status=404)
 
@@ -116,9 +117,9 @@ def mbtiles_s3_server(
         return Response(status=200, content_type='application/json',
                         response=json.dumps(style_dict))
 
-    def get_static(identifier):
+    def get_static(identifier, version, file):
         try:
-            static_dict = statics_dict[identifier]
+            static_dict = statics_dict[(identifier, version, file)]
         except KeyError:
             return Response(status=404)
 
@@ -132,8 +133,10 @@ def mbtiles_s3_server(
         return resp
 
     app.add_url_rule('/v1/tiles/<string:identifier>/<int:z>/<int:x>/<int:y>', view_func=get_tile)
-    app.add_url_rule('/v1/styles/<string:identifier>.json', view_func=get_styles)
-    app.add_url_rule('/v1/static/<string:identifier>', view_func=get_static)
+    app.add_url_rule(
+        '/v1/styles/<string:identifier>@<string:version>/<string:file>', view_func=get_styles)
+    app.add_url_rule(
+        '/v1/static/<string:identifier>@<string:version>/<string:file>', view_func=get_static)
     server = WSGIServer(('0.0.0.0', port), app, log=app.logger)
 
     return start, stop

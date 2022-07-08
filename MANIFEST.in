@@ -1,3 +1,2 @@
-include mbtiles_s3_server/vendor/positron-gl-style/LICENSE.md
-include mbtiles_s3_server/vendor/positron-gl-style/style.json
-recursive-include mbtiles_s3_server/vendor/maplibre-gl
+recursive-include mbtiles_s3_server/vendor/positron-gl-style@1.8
+recursive-include mbtiles_s3_server/vendor/maplibre-gl@2.1.9

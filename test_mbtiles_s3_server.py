@@ -132,7 +132,8 @@ def test_tile_file_does_not_exists(processes):
 
 
 def test_styles_file(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/styles/positron-gl-style.json?tiles=mytiles')
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=mytiles')
     assert response.status_code == 200
 
     style_dict = json.loads(response.content)
@@ -151,12 +152,12 @@ def test_styles_file_does_not_exists(processes):
 
 
 def test_static_file(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl.2.1.9.css')
+    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.css')
     assert response.status_code == 200
 
 
 def test_static_file_not_exist(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl.2.1.9.not')
+    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.not')
     assert response.status_code == 404
 
 

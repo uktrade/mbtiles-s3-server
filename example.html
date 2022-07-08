@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <title>Example map</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    <script src="http://localhost:8080/v1/static/maplibre-gl.2.1.9.js"></script>
-    <link href="http://localhost:8080/v1/static/maplibre-gl.2.1.9.css" rel="stylesheet">
+    <script src="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.js"></script>
+    <link href="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.css" rel="stylesheet">
   </head>
   <body>
     <h1>Example map</h1>
@@ -13,7 +13,7 @@
     <script>
     var map = new maplibregl.Map({
         container: 'map',
-        style: 'http://localhost:8080/v1/styles/positron-gl-style.json?tiles=mytiles',
+        style: 'http://localhost:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=mytiles',
         center: [-74.5, 40],
         zoom: 9
     });
