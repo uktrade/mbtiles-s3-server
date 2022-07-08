@@ -94,7 +94,10 @@ def mbtiles_s3_server(
                 tile_data = row[0]
 
         return \
-            Response(status=200, response=tile_data) if tile_data is not None else \
+            Response(status=200, response=tile_data, headers={
+                'content-encoding': 'gzip',
+                'content-type': 'application/vnd.mapbox-vector-tile',
+            }) if tile_data is not None else \
             Response(status=404)
 
     def get_styles(identifier, version, file):
