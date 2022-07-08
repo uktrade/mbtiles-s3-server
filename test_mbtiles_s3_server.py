@@ -107,10 +107,12 @@ def test_meta_application_fails():
         application(max_attempts=1).__enter__()
 
 
-def test_meta_put_many_objects():
+def test_meta_put_many_objects(processes):
     # Ensure code coverage on deleting of > 1000 objects
-    for i in range(0, 1100):
-        put_object(str(i), b'-')
+
+    for i in range(0, 501):
+        put_object(str(i), str(i).encode())
+        put_object(str(i), str(i).encode())
 
 
 def test_tile_exists(processes):
@@ -244,7 +246,7 @@ def delete_all_objects():
                     yield key, version_id
                 if element.tag == f'{namespace}NextKeyMarker':
                     key_marker = element.text
-                if element.tag == f'{namespace}NextVersionMarker':
+                if element.tag == f'{namespace}NextVersionIdMarker':
                     version_marker = element.text
 
         yield from _list()
