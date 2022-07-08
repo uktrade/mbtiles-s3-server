@@ -26,7 +26,7 @@
     }
   },
   "sprite": "https://openmaptiles.github.io/positron-gl-style/sprite",
-  "glyphs": "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key={key}",
+  "glyphs": "https://s3.eu-west-2.amazonaws.com/mirrors.notebook.uktrade.io/maps/positron/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
       "id": "background",

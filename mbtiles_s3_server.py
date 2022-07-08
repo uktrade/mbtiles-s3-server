@@ -144,6 +144,21 @@ def mbtiles_s3_server(
         except KeyError:
             return Response(status=404)
 
+        try:
+            fonts_identifier_with_version = request.args['fonts']
+        except KeyError:
+            return Response(status=400)
+
+        try:
+            fonts_identifier, fonts_version = fonts_identifier_with_version.split('@')
+        except ValueError:
+            return Response(status=400)
+
+        try:
+            fonts_dict[(fonts_identifier, fonts_version)]
+        except KeyError:
+            return Response(status=404)
+
         style_dict = json.loads(style_bytes)
         style_dict['sources']['openmaptiles'] = {
             'type': 'vector',
@@ -151,6 +166,8 @@ def mbtiles_s3_server(
                 request.url_root + 'v1/tiles/' + tiles_identifier_with_version + '/{z}/{x}/{y}.mvt'
             ],
         }
+        style_dict['glyphs'] = request.url_root + 'v1/fonts/' + \
+            fonts_identifier_with_version + '/{fontstack}{range}.pbf'
 
         return Response(status=200, content_type='application/json',
                         response=json.dumps(style_dict))
