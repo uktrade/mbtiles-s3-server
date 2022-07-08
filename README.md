@@ -17,58 +17,59 @@ pip install mbtiles-s3-server
 The libsqlite3 binary library is also required, but this is typically already installed on most systems. The earliest version of libsqlite3 known to work is 2012-12-12 (3.7.15).
 
 
-## Usage
+## Example usage
 
-The server is configured using environment variables.
+1. Upload an mbtiles file to S3, for example to `https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles`
 
-```bash
-PORT=8080 \
-MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
-MBTILES__1__IDENTIFIER=mytiles \
-MBTILES__1__VERSION=1.0 \
-AWS_REGION=eu-west-2 \
-AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE \
-AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
-AWS_SESSION_TOKEN="Only needed for temporary credentials" \
-HTTP_ACCESS_CONTROL_ALLOW_ORIGIN="*" \
-    python -m mbtiles_s3_server
-```
+2. Start this server - its configured using environment variables
 
+   ```bash
+   PORT=8080 \
+   MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
+   MBTILES__1__IDENTIFIER=mytiles \
+   MBTILES__1__VERSION=1.0 \
+   AWS_REGION=eu-west-2 \
+   AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE \
+   AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
+   AWS_SESSION_TOKEN="Only needed for temporary credentials" \
+   HTTP_ACCESS_CONTROL_ALLOW_ORIGIN="*" \
+       python -m mbtiles_s3_server
+   ```
 
-## Example HTML
+3. On your user-facing site, include HTML that loads a map from this server, for example
 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Example map</title>
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-    <script src="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.js"></script>
-    <link href="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.css" rel="stylesheet">
-  </head>
-  <body>
-    <h1>Example map</h1>
-    <div id='map' style='width: 400px; height: 300px;'></div>
-    <script>
-    var map = new maplibregl.Map({
-        container: 'map',
-        style: 'http://localhost:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=mytiles',
-        center: [-74.5, 40],
-        zoom: 9
-    });
-    </script>
-  </body>
-</html>
-```
+   ```html
+   <!DOCTYPE html>
+   <html>
+     <head>
+       <meta charset="utf-8">
+       <title>Example map</title>
+       <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+       <script src="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.js"></script>
+       <link href="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.css" rel="stylesheet">
+     </head>
+     <body>
+       <h1>Example map</h1>
+       <div id='map' style='width: 400px; height: 300px;'></div>
+       <script>
+       var map = new maplibregl.Map({
+           container: 'map',
+           style: 'http://localhost:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=mytiles@1.0',
+           center: [-74.5, 40],
+           zoom: 9
+       });
+       </script>
+     </body>
+   </html>
+   ```
 
-This file is included in this repository as [example.html](./example.html).
+   This HTML is included in this repository in [example.html](./example.html). A simple server can be started to view it by
 
-```bash
-python -m http.server 8081 --bind 127.0.0.1
-````
+   ```bash
+   python -m http.server 8081 --bind 127.0.0.1
+   ````
 
-and going to [http://localhost:8081/example.html](http://localhost:8081/example.html)
+   and going to [http://localhost:8081/example.html](http://localhost:8081/example.html)
 
 
 ## For the curious, advanced, or developers of this server itself
