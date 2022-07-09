@@ -73,30 +73,30 @@ The libsqlite3 binary library is also required, but this is typically already in
 5. On your user-facing site, include HTML that loads these tiles from this server, for example to load maps from a server started as above running locally
 
    ```html
-   <!DOCTYPE html>
-   <html>
-     <head>
-       <meta charset="utf-8">
-       <title>Example map</title>
-       <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-       <script src="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.js"></script>
-       <link href="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.css" rel="stylesheet">
-       <style>
-         body, html, #map {margin: 0; padding: 0; height: 100%; width: 100%}
-       </style>
-     </head>
-     <body>
-       <div id="map"></div>
-       <script>
-       var map = new maplibregl.Map({
-           container: 'map',
-           style: 'http://localhost:8080/v1/styles/positron-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0&tiles=mytiles@1.0.0',
-           center: [0, 0],
-           zoom: 1
-       });
-       </script>
-     </body>
-   </html>
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Example map</title>
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+        <script src="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.js"></script>
+        <link href="http://localhost:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.css" rel="stylesheet">
+        <style>
+          body, html, #map {margin: 0; padding: 0; height: 100%; width: 100%}
+        </style>
+      </head>
+      <body>
+        <div id="map"></div>
+        <script>
+        var map = new maplibregl.Map({
+            container: 'map',
+            style: 'http://localhost:8080/v1/styles/osm-bright-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0&tiles=mytiles@1.0.0',
+            center: [0, 0],
+            zoom: 1
+        });
+        </script>
+      </body>
+    </html>
    ```
 
    This HTML is included in this repository in [example.html](./example.html). A simple server can be started to view it by

@@ -76,6 +76,8 @@ def mbtiles_s3_server(
         read('vendor/maptiler-terrain-gl-style@1.0.0/style.json'),
         ('maptiler-toner-gl-style', '1.0.0', 'style.json'):
         read('vendor/maptiler-toner-gl-style@1.0.0/style.json'),
+        ('osm-bright-gl-style', '1.0.0', 'style.json'):
+        read('vendor/osm-bright-gl-style@1.0.0/style.json'),
         ('osm-liberty', '1.0.0', 'style.json'):
         read('vendor/osm-liberty@1.0.0/style.json'),
         ('positron-gl-style', '1.0.0', 'style.json'):
