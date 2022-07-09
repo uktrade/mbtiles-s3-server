@@ -57,7 +57,7 @@ The libsqlite3 binary library is also required, but this is typically already in
        python -m mbtiles_s3_server
    ```
 
-   The above is only to show what environment variables are needed - usually credentials should be avoided in shell commands. When developing locally, instead of specifying the `AWS_*` variables, consider using [aws-vault](https://github.com/99designs/), which populates them for you.
+   The above is only to show what environment variables are needed - usually credentials should be avoided in shell commands. When developing locally, instead of specifying the `AWS_*` variables, consider using [aws-vault](https://github.com/99designs/aws-vault), which populates them for you.
 
    For example if you have a local AWS profile called `tiles`, you can run the below.
 
