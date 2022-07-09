@@ -12,6 +12,7 @@ import signal
 import sys
 import tarfile
 import tempfile
+import zlib
 
 import gevent
 from gevent.pywsgi import (
@@ -24,6 +25,8 @@ from flask import (
 )
 import httpx
 from sqlite_s3_query import sqlite_s3_query
+
+from .glyphs_pb2 import glyphs
 
 
 def mbtiles_s3_server(
@@ -188,6 +191,19 @@ def mbtiles_s3_server(
                         response=json.dumps(style_dict))
 
     def get_fonts(identifier, version, stack, range):
+        # Combines all the fonts in the requested stack, but only include one glyph for each id
+        # Although the format does seem to assume a file can itself have multiple "stacks", we
+        # only look at the first from each. This is wrong if a file has multiple stacks
+
+        def read(path):
+            with open(path, 'rb') as f:
+                return f.read()
+
+        def parse_pbf(buffer):
+            g = glyphs()
+            g.ParseFromString(buffer)
+            return g
+
         try:
             font_path = fonts_dict[(identifier, version)]
         except KeyError:
@@ -196,24 +212,37 @@ def mbtiles_s3_server(
         if '.' in stack or '.' in range:
             return Response(status=404)
 
-        def read(path):
-            with open(path, 'rb') as f:
-                return f.read()
-
-        # While we're unable to join the font stack
-        stack = stack.split('.')[0]
-
         try:
-            font_bytes = b''.join((
-                read(os.path.join(font_path, font, range + '.pbf.gz'))
+            pbfs = tuple((
+                parse_pbf(zlib.decompress(
+                    read(os.path.join(font_path, font, range + '.pbf.gz')),
+                    wbits=32 + zlib.MAX_WBITS
+                ))
                 for font in stack.split(',')
             ))
         except FileNotFoundError:
             return Response(status=404)
 
+        pdf_combined_glyphs_ids = set()
+        pdf_combined_glyphs = []
+        pbf_combined = glyphs()
+        pbf_combined_stack = pbf_combined.stacks.add()
+        pbf_combined_stack.name = stack
+        pbf_combined_stack.range = pbfs[0].stacks[0].range
+
+        for pbf in pbfs:
+            for glyph in pbf.stacks[0].glyphs:
+                if glyph.id not in pdf_combined_glyphs_ids:
+                    pdf_combined_glyphs_ids.add(glyph.id)
+                    pdf_combined_glyphs.append(glyph)
+
+        for glyph in sorted(pdf_combined_glyphs, key=lambda g: g.id):
+            pbf_combined_stack.glyphs.append(glyph)
+
+        compress_obj = zlib.compressobj(wbits=31)
         return Response(status=200, headers={
             'content-encoding': 'gzip',
-        }, response=font_bytes)
+        }, response=compress_obj.compress(pbf_combined.SerializeToString()) + compress_obj.flush())
 
     def get_static(identifier, version, file):
         try:

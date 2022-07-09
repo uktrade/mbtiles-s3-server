@@ -83,6 +83,8 @@ pluggy==1.0.0
     # via pytest
 pre-commit==2.19.0
     # via -r requirements_test.in
+protobuf==4.21.2
+    # via -r requirements.txt
 py==1.11.0
     # via pytest
 pyparsing==3.0.9
