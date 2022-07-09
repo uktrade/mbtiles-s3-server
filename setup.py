@@ -29,4 +29,8 @@ setuptools.setup(
     py_modules=[
         'mbtiles_s3_server',
     ],
+    packages=[
+        'mbtiles_s3_server',
+    ],
+    include_package_data=True,
 )
