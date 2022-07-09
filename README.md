@@ -135,4 +135,4 @@ Hosting your own vector map tiles to show them in a browser requires quite a few
 
 ## Licenses
 
-The code of the server itself is released under the MIT license. However, several components included are released under separate licenses.
+The code of the server itself is released under the MIT license. However, several components included in [vendor/](./vendor/) are released under different licenses.
