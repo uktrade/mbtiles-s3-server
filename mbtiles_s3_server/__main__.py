@@ -38,7 +38,7 @@ def mbtiles_s3_server(
 ):
     server = None
 
-    http_client = exit_stack.enter_context(httpx.Client())
+    http_client = exit_stack.enter_context(httpx.Client(limits=httpx.Limits(max_connections=500)))
 
     # So we can share a single http client (i.e. a single pool of connections) for
     # all instances of sqlite_s3_query
