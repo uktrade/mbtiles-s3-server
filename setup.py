@@ -26,9 +26,6 @@ setuptools.setup(
         'gevent>=21.12.0',
         'sqlite-s3-query>=0.0.67',
     ],
-    py_modules=[
-        'mbtiles_s3_server',
-    ],
     packages=[
         'mbtiles_s3_server',
     ],

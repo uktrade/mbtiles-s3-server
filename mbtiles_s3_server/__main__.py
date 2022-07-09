@@ -62,37 +62,37 @@ def mbtiles_s3_server(
 
     styles_dict = {
         ('dark-matter-gl-style', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/dark-matter-gl-style@1.0.0/style.json'),
+        read('vendor/dark-matter-gl-style@1.0.0/style.json'),
         ('fiord-color-gl-style', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/fiord-color-gl-style@1.0.0/style.json'),
+        read('vendor/fiord-color-gl-style@1.0.0/style.json'),
         ('maptiler-3d-gl-style', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/maptiler-3d-gl-style@1.0.0/style.json'),
+        read('vendor/maptiler-3d-gl-style@1.0.0/style.json'),
         ('maptiler-basic-gl-style', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/maptiler-basic-gl-style@1.0.0/style.json'),
+        read('vendor/maptiler-basic-gl-style@1.0.0/style.json'),
         ('maptiler-terrain-gl-style', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/maptiler-terrain-gl-style@1.0.0/style.json'),
+        read('vendor/maptiler-terrain-gl-style@1.0.0/style.json'),
         ('maptiler-toner-gl-style', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/maptiler-toner-gl-style@1.0.0/style.json'),
+        read('vendor/maptiler-toner-gl-style@1.0.0/style.json'),
         ('osm-liberty', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/osm-liberty@1.0.0/style.json'),
+        read('vendor/osm-liberty@1.0.0/style.json'),
         ('positron-gl-style', '1.0.0', 'style.json'):
-        read('mbtiles_s3_server/vendor/positron-gl-style@1.0.0/style.json'),
+        read('vendor/positron-gl-style@1.0.0/style.json'),
     }
 
     statics_dict = {
         ('maplibre-gl', '2.1.9', 'maplibre-gl.css'): {
-            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl@2.1.9/maplibre-gl.css'),
+            'bytes': read('vendor/maplibre-gl@2.1.9/maplibre-gl.css'),
             'mime': 'text/css',
         },
         ('maplibre-gl', '2.1.9', 'maplibre-gl.js'): {
-            'bytes': read('mbtiles_s3_server/vendor/maplibre-gl@2.1.9/maplibre-gl.js'),
+            'bytes': read('vendor/maplibre-gl@2.1.9/maplibre-gl.js'),
             'mime': 'application/javascript',
         },
     }
 
     fonts_dict = {
         ('fonts-gl', '1.0.0'):
-        extract('mbtiles_s3_server/vendor/fonts-gl@1.0.0/fonts.tar.gz')
+        extract('vendor/fonts-gl@1.0.0/fonts.tar.gz')
     }
 
     def start():
