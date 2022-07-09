@@ -14,6 +14,11 @@ jobs:
         command: ['-c', 'mkdir -p /data1 && mkdir -p /data2 && mkdir -p /data3 && mkdir -p /data4 && minio server /data{1...4}']
     working_directory: ~/repo
     steps:
+      - run:
+          name: Install git-lfs
+          command: |
+            sudo apt-get update
+            sudo apt-get install git-lfs
       - checkout
       - restore_cache:
           keys:
