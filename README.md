@@ -100,9 +100,9 @@ The libsqlite3 binary library is also required, but this is typically already in
 
 Hosting your own vector map tiles to show them in a browser requires quite a few components:
 
-1. **JavaScript**
+1. **JavaScript and CSS**
 
-   A library such as [MapLibre GL](https://github.com/maplibre/maplibre-gl-js), and your own code to run the library, and point it to a style file
+   A Javascript and CSS library, such as [MapLibre GL](https://github.com/maplibre/maplibre-gl-js), and your own code to run this library, pointing it to a style file
 
 2. **Style file**
 
