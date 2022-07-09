@@ -43,13 +43,13 @@ The libsqlite3 binary library is also required, but this is typically already in
    }   
    ```
 
-4. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables. You can assign the tiles file any version you like, in this case, `1.0`.
+4. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables. You can assign the tiles file any version you like, in this case, `1.0.0`.
 
    ```bash
    PORT=8080 \
    MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
    MBTILES__1__IDENTIFIER=mytiles \
-   MBTILES__1__VERSION=1.0 \
+   MBTILES__1__VERSION=1.0.0 \
    AWS_REGION=eu-west-2 \
    AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE \
    AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
@@ -77,10 +77,10 @@ The libsqlite3 binary library is also required, but this is typically already in
        <div id="map"></div>
        <script>
        var map = new maplibregl.Map({
-         container: 'map',
-         style: 'http://localhost:8080/v1/styles/positron-gl-style@1.0.0-9ff6653/style.json?fonts=fonts-gl@1.0.0-e1c6ea6&tiles=mytiles@1.0',
-         center: [0, 0],
-         zoom: 1
+           container: 'map',
+           style: 'http://localhost:8080/v1/styles/positron-gl-style@1.0.0/   style.json?fonts=fonts-gl@1.0.0&tiles=mytiles@1.0.0',
+           center: [0, 0],
+           zoom: 1
        });
        </script>
      </body>
