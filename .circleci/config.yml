@@ -48,7 +48,7 @@ jobs:
           command: |
             set -xu
             ./cc-test-reporter before-build
-            ./test_mbtiles_s3_server.sh
+            ./test/test_mbtiles_s3_server.sh
             coverage combine
             coverage xml
             ./cc-test-reporter after-build

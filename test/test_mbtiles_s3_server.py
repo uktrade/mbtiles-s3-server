@@ -28,7 +28,7 @@ def application(port=8080, max_attempts=500, aws_access_key_id='AKIAIOSFODNN7EXA
         </VersioningConfiguration>
     '''.encode(), params=(('versioning', ''),))
     delete_all_objects()
-    with open('counties.mbtiles', 'rb') as f:
+    with open('test/counties.mbtiles', 'rb') as f:
         put_object('counties.mbtiles', f.read())
 
     process_definitions = {
