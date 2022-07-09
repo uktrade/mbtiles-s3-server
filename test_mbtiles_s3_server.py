@@ -136,8 +136,8 @@ def test_tile_file_does_not_exists(processes):
 
 def test_styles_file(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/'
-        'style.json?fonts=fonts-gl@2.0&tiles=mytiles@1.1'
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0-9ff6653/'
+        'style.json?fonts=fonts-gl@1.0.0-e1c6ea6&tiles=mytiles@1.1'
     )
     assert response.status_code == 200
 
@@ -150,52 +150,58 @@ def test_styles_file(processes):
         },
     }
     assert style_dict['glyphs'] == \
-        'http://127.0.0.1:8080/v1/fonts/fonts-gl@2.0/{fontstack}/{range}.pbf'
+        'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0-e1c6ea6/{fontstack}/{range}.pbf'
 
 
 def test_styles_file_does_not_exists(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/notmystyle.json?tiles=mytiles@1.1')
+        'http://127.0.0.1:8080/v1/styles'
+        '/positron-gl-style@1.0.0-9ff6653/notmystyle.json?tiles=mytiles@1.1')
     assert response.status_code == 404
 
 
 def test_styles_file_without_tiles_argument(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/style.json')
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0-9ff6653/style.json')
     assert response.status_code == 400
 
 
 def test_styles_file_without_tiles_version(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=mytiles')
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0-9ff6653/style.json?tiles=mytiles')
     assert response.status_code == 400
 
 
 def test_styles_file_with_tiles_that_does_not_exists(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.8/style.json?tiles=notmytiles@1.1')
+        'http://127.0.0.1:8080/v1/styles'
+        '/positron-gl-style@1.0.0-9ff6653/style.json?tiles=notmytiles@1.1')
     assert response.status_code == 404
 
 
 def test_static_file(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.css')
+    response = httpx.get('http://127.0.0.1:8080/v1/static'
+                         '/maplibre-gl@2.1.9/maplibre-gl.css')
     assert response.status_code == 200
 
 
 def test_static_file_not_exist(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/static/maplibre-gl@2.1.9/maplibre-gl.not')
+    response = httpx.get('http://127.0.0.1:8080/v1/static'
+                         '/maplibre-gl@2.1.9/maplibre-gl.not')
     assert response.status_code == 404
 
 
 def test_font_file(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/fonts/fonts-gl@2.0/Metropolis Black/0-255.pbf')
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0-e1c6ea6/Metropolis Black/0-255.pbf')
     assert response.status_code == 200
     assert len(response.content) > 1000
 
 
 def test_font_files(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/fonts/fonts-gl@2.0/Metropolis Black,Noto Sans Regular/0-255.pbf')
+        'http://127.0.0.1:8080/v1/fonts'
+        '/fonts-gl@1.0.0-e1c6ea6/Metropolis Black,Noto Sans Regular/0-255.pbf')
     assert response.status_code == 200
     assert len(response.content) > 1000
 

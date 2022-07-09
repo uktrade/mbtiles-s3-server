@@ -61,8 +61,24 @@ def mbtiles_s3_server(
     }
 
     styles_dict = {
-        ('positron-gl-style', '1.8', 'style.json'):
-        read('mbtiles_s3_server/vendor/positron-gl-style@1.8/style.json'),
+        ('dark-matter-gl-style', '1.0.0-1282599', 'style.json'):
+        read('mbtiles_s3_server/vendor/dark-matter-gl-style@1.0.0-1282599/style.json'),
+        ('fiord-color-gl-style', '1.0.0-0d12953', 'style.json'):
+        read('mbtiles_s3_server/vendor/fiord-color-gl-style@1.0.0-0d12953/style.json'),
+        ('maptiler-3d-gl-style', '1.0.0-9fc7422', 'style.json'):
+        read('mbtiles_s3_server/vendor/maptiler-3d-gl-style@1.0.0-9fc7422/style.json'),
+        ('maptiler-basic-gl-style', '1.0.0-41c78c2', 'style.json'):
+        read('mbtiles_s3_server/vendor/maptiler-basic-gl-style@1.0.0-41c78c2/style.json'),
+        ('maptiler-terrain-gl-style', '1.0.0-6c480e8', 'style.json'):
+        read('mbtiles_s3_server/vendor/maptiler-terrain-gl-style@1.0.0-6c480e8/style.json'),
+        ('maptiler-toner-gl-style', '1.0.0-339e5b7', 'style.json'):
+        read('mbtiles_s3_server/vendor/maptiler-toner-gl-style@1.0.0-339e5b7/style.json'),
+        ('maptiler-toner-gl-style', '1.0.0-9ff6653', 'style.json'):
+        read('mbtiles_s3_server/vendor/maptiler-toner-gl-style@1.0.0-339e5b7/style.json'),
+        ('osm-liberty', '1.0.0-539d052', 'style.json'):
+        read('mbtiles_s3_server/vendor/osm-liberty@1.0.0-539d052/style.json'),
+        ('positron-gl-style', '1.0.0-9ff6653', 'style.json'):
+        read('mbtiles_s3_server/vendor/positron-gl-style@1.0.0-9ff6653/style.json'),
     }
 
     statics_dict = {
@@ -77,7 +93,8 @@ def mbtiles_s3_server(
     }
 
     fonts_dict = {
-        ('fonts-gl', '2.0'): extract('mbtiles_s3_server/vendor/fonts-gl@2.0/fonts.tar.gz')
+        ('fonts-gl', '1.0.0-e1c6ea6'):
+        extract('mbtiles_s3_server/vendor/fonts-gl@1.0.0-e1c6ea6/fonts.tar.gz')
     }
 
     def start():

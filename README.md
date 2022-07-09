@@ -77,10 +77,10 @@ The libsqlite3 binary library is also required, but this is typically already in
        <div id="map"></div>
        <script>
        var map = new maplibregl.Map({
-           container: 'map',
-           style: 'http://localhost:8080/v1/styles/positron-gl-style@1.8/style.json?fonts=fonts-gl@2.0&tiles=mytiles@1.0',
-           center: [0, 0],
-           zoom: 1
+         container: 'map',
+         style: 'http://localhost:8080/v1/styles/positron-gl-style@1.0.0-9ff6653/style.json?fonts=fonts-gl@1.0.0-e1c6ea6&tiles=mytiles@1.0',
+         center: [0, 0],
+         zoom: 1
        });
        </script>
      </body>
