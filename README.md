@@ -32,7 +32,6 @@ The libsqlite3 binary library is also required, but this is typically already in
            {
                "Sid": "",
                "Effect": "Allow",
-               "Principal": "*",
                "Action": [
                    "s3:GetObject",
                    "s3:GetObjectVersion"
