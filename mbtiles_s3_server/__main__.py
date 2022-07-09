@@ -25,6 +25,9 @@ from flask import (
 )
 import httpx
 from sqlite_s3_query import sqlite_s3_query
+from werkzeug.middleware.proxy_fix import (
+    ProxyFix,
+)
 
 from .glyphs_pb2 import glyphs
 
@@ -107,6 +110,7 @@ def mbtiles_s3_server(
         server.stop()
 
     app = Flask('app')
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_for=0, x_host=0, x_port=0, x_prefix=0)
 
     sql = '''
         SELECT

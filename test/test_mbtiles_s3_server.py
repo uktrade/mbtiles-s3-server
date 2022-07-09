@@ -153,6 +153,29 @@ def test_styles_file(processes):
         'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0/{fontstack}/{range}.pbf'
 
 
+def test_styles_file_x_forwarded(processes):
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/'
+        'style.json?fonts=fonts-gl@1.0.0&tiles=mytiles@1.1',
+        headers={
+            'host': 'www.mypublicdomain.com',
+            'x-forwarded-proto': 'https',
+        }
+    )
+    assert response.status_code == 200
+
+    style_dict = json.loads(response.content)
+    assert style_dict['name'] == 'Positron'
+    assert style_dict['sources'] == {
+        'openmaptiles': {
+            'type': 'vector',
+            'tiles': ['https://www.mypublicdomain.com/v1/tiles/mytiles@1.1/{z}/{x}/{y}.mvt'],
+        },
+    }
+    assert style_dict['glyphs'] == \
+        'https://www.mypublicdomain.com/v1/fonts/fonts-gl@1.0.0/{fontstack}/{range}.pbf'
+
+
 def test_styles_file_does_not_exists(processes):
     response = httpx.get(
         'http://127.0.0.1:8080/v1/styles'
