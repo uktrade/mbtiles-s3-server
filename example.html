@@ -11,14 +11,18 @@
     </style>
   </head>
   <body>
-    <div id="map"></div>
+    <div id="map" ></div>
     <script>
     var map = new maplibregl.Map({
         container: 'map',
         style: 'http://localhost:8080/v1/styles/osm-bright-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0&tiles=mytiles@1.0.0',
         center: [0, 0],
-        zoom: 1
+        zoom: 1,
+        attributionControl: false
     });
+    map.addControl(new maplibregl.AttributionControl({
+        customAttribution: '<a href="https://openmaptiles.org/">© OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>'
+    }), 'bottom-right');
     </script>
   </body>
 </html>

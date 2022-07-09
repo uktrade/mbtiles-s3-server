@@ -72,7 +72,7 @@ The libsqlite3 binary library is also required, but this is typically already in
        aws-vault exec tiles -- python -m mbtiles_s3_server
    ```
 
-5. On your user-facing site, include HTML that loads these tiles from this server, for example to load maps from a server started as above running locally
+5. On your user-facing site, include HTML that loads these tiles from this server, for example to load maps from a server started as above running locally serving OpenMapTiles
 
    ```html
     <!DOCTYPE html>
@@ -94,8 +94,12 @@ The libsqlite3 binary library is also required, but this is typically already in
             container: 'map',
             style: 'http://localhost:8080/v1/styles/osm-bright-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0&tiles=mytiles@1.0.0',
             center: [0, 0],
-            zoom: 1
+            zoom: 1,
+            attributionControl: false
         });
+        map.addControl(new maplibregl.AttributionControl({
+            customAttribution: '<a href="https://openmaptiles.org/">© OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors</a>'
+        }), 'bottom-right');
         </script>
       </body>
     </html>
