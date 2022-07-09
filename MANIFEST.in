@@ -1,18 +1,18 @@
 recursive-include mbtiles_s3_server/vendor/maplibre-gl@1.0.0
 recursive-include mbtiles_s3_server/vendor/fonts-gl@1.0.0
-include/dark-matter-gl-style@1.0.0/style.json
-include/dark-matter-gl-style@1.0.0/LICENSE.md
-include/maptiler-terrain-gl-style@1.0.0/style.json
-include/maptiler-terrain-gl-style@1.0.0/LICENSE.md
-include/positron-gl-style@1.0.0/style.json
-include/positron-gl-style@1.0.0/LICENSE.md
-include/fiord-color-gl-style@1.0.0/style.json
-include/fiord-color-gl-style@1.0.0/LICENSE.md
-include/maptiler-3d-gl-style@1.0.0/style.json
-include/maptiler-3d-gl-style@1.0.0/LICENSE.md
-include/maptiler-toner-gl-style@1.0.0/style.json
-include/maptiler-toner-gl-style@1.0.0/LICENSE.md
-include/maptiler-basic-gl-style@1.0.0/style.json
-include/maptiler-basic-gl-style@1.0.0/LICENSE.md
-include/osm-liberty@1.0.0/style.json
-include/osm-liberty@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/dark-matter-gl-style@1.0.0/style.json
+include mbtiles_s3_server/vendor/dark-matter-gl-style@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/maptiler-terrain-gl-style@1.0.0/style.json
+include mbtiles_s3_server/vendor/maptiler-terrain-gl-style@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/positron-gl-style@1.0.0/style.json
+include mbtiles_s3_server/vendor/positron-gl-style@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/fiord-color-gl-style@1.0.0/style.json
+include mbtiles_s3_server/vendor/fiord-color-gl-style@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/maptiler-3d-gl-style@1.0.0/style.json
+include mbtiles_s3_server/vendor/maptiler-3d-gl-style@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/maptiler-toner-gl-style@1.0.0/style.json
+include mbtiles_s3_server/vendor/maptiler-toner-gl-style@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/maptiler-basic-gl-style@1.0.0/style.json
+include mbtiles_s3_server/vendor/maptiler-basic-gl-style@1.0.0/LICENSE.md
+include mbtiles_s3_server/vendor/osm-liberty@1.0.0/style.json
+include mbtiles_s3_server/vendor/osm-liberty@1.0.0/LICENSE.md
