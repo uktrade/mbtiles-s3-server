@@ -5,7 +5,7 @@ Python server to on-the-fly extract and serve vector tiles from mbtiles files on
 
 Versioning must be enabled on the underlying S3 bucket
 
-> Note: sprites (icons and textures on maps) are not yet served locally
+> Note: sprites (icons and textures on maps) are not yet served
 
 
 ## Installation
