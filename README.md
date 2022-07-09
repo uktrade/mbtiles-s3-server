@@ -53,9 +53,21 @@ The libsqlite3 binary library is also required, but this is typically already in
    AWS_REGION=eu-west-2 \
    AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE \
    AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY \
-   AWS_SESSION_TOKEN="Only needed for temporary credentials" \
    HTTP_ACCESS_CONTROL_ALLOW_ORIGIN="*" \
        python -m mbtiles_s3_server
+   ```
+
+   The above is only to show what environment variables are needed - usually credentials should be avoided in shell commands. When developing locally, instead of specifying the `AWS_*` variables, consider using [aws-vault](https://github.com/99designs/), which populates them for you.
+
+   For example if you have a local AWS profile called `tiles`, you can run the below.
+
+   ```bash
+   PORT=8080 \
+   MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
+   MBTILES__1__IDENTIFIER=mytiles \
+   MBTILES__1__VERSION=1.0.0 \
+   HTTP_ACCESS_CONTROL_ALLOW_ORIGIN="*" \
+       aws-vault exec tiles -- python -m mbtiles_s3_server
    ```
 
 5. On your user-facing site, include HTML that loads these tiles from this server, for example to load maps from a server started as above running locally
