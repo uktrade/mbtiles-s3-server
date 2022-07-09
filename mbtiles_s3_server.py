@@ -185,15 +185,20 @@ def mbtiles_s3_server(
             with open(path, 'rb') as f:
                 return f.read()
 
+        # While we're unable to join the font stack
+        stack = stack.split('.')[0]
+
         try:
             font_bytes = b''.join((
-                read(os.path.join(font_path, font, range + '.pbf'))
+                read(os.path.join(font_path, font, range + '.pbf.gz'))
                 for font in stack.split(',')
             ))
         except FileNotFoundError:
             return Response(status=404)
 
-        return Response(status=200, response=font_bytes)
+        return Response(status=200, headers={
+            'content-encoding': 'gzip',
+        }, response=font_bytes)
 
     def get_static(identifier, version, file):
         try:
