@@ -113,6 +113,15 @@ The libsqlite3 binary library is also required, but this is typically already in
    and going to [http://localhost:8081/example.html](http://localhost:8081/example.html)
 
 
+## Performance
+
+The performance with default mbtiles files can be horrible to the point of being unusable - loading of a single tile can take many seconds. However, this can be greatly improved by changing the underlying SQLite page size of the mbtiles file. The default of many files appears to be 512 bytes, but increasing this to 65536 bytes (64KiB) can help tremendously. This can be done using the `VACUUM INTO` command, added to sqlite3 in version 3.27.0 (2019-02-07), before uploading the file to S3.
+
+```bash
+sqlite3 my-map.mbtils "PRAGMA page_size=65536; VACUUM INTO my-map-65536.mbtiles;"
+````
+
+
 ## For the curious, advanced, or developers of this server itself
 
 Hosting your own vector map tiles to show them in a browser requires quite a few components:
