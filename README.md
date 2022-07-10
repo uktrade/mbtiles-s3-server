@@ -3,7 +3,7 @@
 
 Python server to on-the-fly extract and serve vector tiles from mbtiles files on S3. Javascript, maps styles, fonts, and sprites are included so you can get setup quickly, especially with OpenMapTiles mbtiles files, but these are not required to be used. Versioning must be enabled on the underlying S3 bucket.
 
-https://user-images.githubusercontent.com/13877/178137529-7c4f042b-bb9a-4b8f-a4de-b17ac63b4812.mov
+https://user-images.githubusercontent.com/13877/178137820-9734a903-6efb-4b1a-a7f0-44e59a290176.mov
 
 > Note: sprites (icons and textures on maps) are not yet served
 
