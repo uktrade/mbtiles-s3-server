@@ -45,7 +45,7 @@ sniffio==1.2.0
     #   anyio
     #   httpcore
     #   httpx
-sqlite-s3-query==0.0.67
+sqlite-s3-query==0.0.68
     # via -r requirements.in
 werkzeug==2.1.2
     # via flask

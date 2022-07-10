@@ -105,7 +105,7 @@ sniffio==1.2.0
     #   anyio
     #   httpcore
     #   httpx
-sqlite-s3-query==0.0.67
+sqlite-s3-query==0.0.68
     # via -r requirements.txt
 toml==0.10.2
     # via pre-commit

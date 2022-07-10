@@ -62,7 +62,9 @@ def mbtiles_s3_server(
         return tempdir
 
     mbtiles_dict = {
-        (mbtile['IDENTIFIER'], mbtile['VERSION']): mbtile
+        (mbtile['IDENTIFIER'], mbtile['VERSION']): exit_stack.enter_context(sqlite_s3_query(
+            url=mbtile['URL'], get_http_client=get_http_client
+        ))
         for mbtile in mbtiles
     }
 
@@ -126,17 +128,14 @@ def mbtiles_s3_server(
 
     def get_tile(identifier, version, z, x, y):
         try:
-            mbtiles_url = mbtiles_dict[(identifier, version)]['URL']
+            mbtiles_sqlite_s3_query = mbtiles_dict[(identifier, version)]
         except KeyError:
             return Response(status=404)
 
         tile_data = None
         y_tms = (2**z - 1) - y
 
-        with \
-                sqlite_s3_query(url=mbtiles_url, get_http_client=get_http_client) as query, \
-                query(sql, params=(z, x, y_tms)) as (columns, rows):
-
+        with mbtiles_sqlite_s3_query(sql, params=(z, x, y_tms)) as (columns, rows):
             for row in rows:
                 tile_data = row[0]
 

@@ -25,7 +25,7 @@ setuptools.setup(
         'flask>=2.1.2',
         'gevent>=21.12.0',
         'protobuf>=4.21.2',
-        'sqlite-s3-query>=0.0.67',
+        'sqlite-s3-query>=0.0.68',
     ],
     packages=[
         'mbtiles_s3_server',
