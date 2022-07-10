@@ -25,7 +25,7 @@ The libsqlite3 binary library is also required, but this is typically already in
   
    ```bash
    sqlite3 my-map.mbtiles "PRAGMA page_size=65536; VACUUM INTO 'mytiles-65536.mbtiles';"
-   ````
+   ```
 
    While this step is optional, performance with default mbtiles files that have smaller page sizes can be horrible to the point of being unusable - loading of a single tile can take many seconds. Performance of this server is limited by the latency of calls to S3, and this step effectively reduces the number of calls to S3 per map tile.
 
