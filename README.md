@@ -23,7 +23,7 @@ The libsqlite3 binary library is also required, but this is typically already in
 
 2. (Optional) Create another file with a page size of 65536 bytes (64KiB) using `VACUUM` or `VACUUM INTO`
   
-  ```bash
+   ```bash
    sqlite3 my-map.mbtiles "PRAGMA page_size=65536; VACUUM INTO 'mytiles-65536.mbtiles';"
    ````
 
