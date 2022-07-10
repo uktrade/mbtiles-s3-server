@@ -3,7 +3,7 @@
 
 Python server to on-the-fly extract and serve vector tiles from mbtiles files on S3. Javascript, maps styles, fonts, and sprites are included so you can get setup quickly, especially with OpenMapTiles mbtiles files, but these are not required to be used.
 
-Versioning must be enabled on the underlying S3 bucket. Please see the notes about [performance](#performance).
+Versioning must be enabled on the underlying S3 bucket.
 
 > Note: sprites (icons and textures on maps) are not yet served
 
@@ -21,9 +21,19 @@ The libsqlite3 binary library is also required, but this is typically already in
 
 1. Create or obtain an mbtiles file, for example from https://openmaptiles.org/.
 
-2. Upload this file to S3, for example to `https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles`
+2. (Optional) Create another file with a page size of 65536 bytes (64KiB) using `VACUUM` or `VACUUM INTO`
+  
+  ```bash
+   sqlite3 my-map.mbtiles "PRAGMA page_size=65536; VACUUM INTO 'mytiles-65536.mbtiles';"
+   ````
 
-3. Ensure to have a IAM user that has `s3:GetObject` and `s3:GetObjectVersion` permissions on this S3 object, for example
+   While this step is optional, performance with default mbtiles files that have smaller page sizes can be horrible to the point of being unusable - loading of a single tile can take many seconds. Performance of this server is limited by the latency of calls to S3, and this step effectively reduces the number of calls to S3 per map tile.
+
+   Note both `VACUUM` and `VACUUM INTO` need disk space since they create another database which is approximately the size of the original file.
+
+3. Upload this file to S3, for example to `https://my-bucket.s3.eu-west-2.amazonaws.com/mytiles-65536.mbtiles`
+
+4. Ensure to have a IAM user that has `s3:GetObject` and `s3:GetObjectVersion` permissions on this S3 object, for example
 
    ```json
    {
@@ -37,18 +47,18 @@ The libsqlite3 binary library is also required, but this is typically already in
                    "s3:GetObjectVersion"
                ],
                "Resource": [
-                   "arn:aws:s3:::my-bucket/tiles.mbtiles"
+                   "arn:aws:s3:::my-bucket/mytiles-65536.mbtiles"
                ]
            }
        ]
    }   
    ```
 
-4. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables. You can assign the tiles file any version you like, in this case, `1.0.0`.
+5. Start this server, configured with the location of this object and credentials for this user - it's configured using environment variables. You can assign the tiles file any version you like, in this case, `1.0.0`.
 
    ```bash
    PORT=8080 \
-   MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/tiles.mbtiles \
+   MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/mytiles-65536.mbtiles \
    MBTILES__1__IDENTIFIER=mytiles \
    MBTILES__1__VERSION=1.0.0 \
    AWS_REGION=eu-west-2 \
@@ -71,7 +81,7 @@ The libsqlite3 binary library is also required, but this is typically already in
        aws-vault exec tiles -- python -m mbtiles_s3_server
    ```
 
-5. On your user-facing site, include HTML that loads these tiles from this server, for example to load maps from a server started as above running locally serving OpenMapTiles
+6. On your user-facing site, include HTML that loads these tiles from this server, for example to load maps from a server started as above running locally serving OpenMapTiles
 
    ```html
     <!DOCTYPE html>
@@ -111,15 +121,6 @@ The libsqlite3 binary library is also required, but this is typically already in
    ````
 
    and going to [http://localhost:8081/example.html](http://localhost:8081/example.html)
-
-
-## Performance
-
-The performance with default mbtiles files can be horrible to the point of being unusable - loading of a single tile can take many seconds. However, this can be greatly improved by changing the underlying SQLite page size of the mbtiles file. The default of many files appears to be 512 bytes, but increasing this to 65536 bytes (64KiB) can help tremendously. This can be done using `VACUUM` or `VACCUM INTO`, before uploading the file to S3.
-
-```bash
-sqlite3 my-map.mbtils "PRAGMA page_size=65536; VACUUM INTO 'my-map-65536.mbtiles';"
-````
 
 
 ## For the curious, advanced, or developers of this server itself
