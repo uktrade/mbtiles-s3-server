@@ -5,6 +5,8 @@ Python server to on-the-fly extract and serve vector tiles from mbtiles files on
 
 https://user-images.githubusercontent.com/13877/178137820-9734a903-6efb-4b1a-a7f0-44e59a290176.mov
 
+Video showing expected performance. The server hosting the HTML is running locally, but mbtiles-s3-server is running AWS, communicating with a real S3 bucket.
+
 > Note: sprites (icons and textures on maps) are not yet served
 
 
