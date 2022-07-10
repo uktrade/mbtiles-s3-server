@@ -104,6 +104,7 @@ The libsqlite3 binary library is also required, but this is typically already in
             style: 'http://localhost:8080/v1/styles/osm-bright-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0&tiles=mytiles@1.0.0',
             center: [0, 0],
             zoom: 1,
+            maxZoom: 14,
             attributionControl: false
         });
         map.addControl(new maplibregl.AttributionControl({
