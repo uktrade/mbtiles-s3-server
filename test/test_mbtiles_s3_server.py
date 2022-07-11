@@ -54,6 +54,8 @@ def application(port=8080, max_attempts=500, aws_access_key_id='AKIAIOSFODNN7EXA
                 ),
                 'AWS_REGION': 'us-east-1',
                 'MBTILES__1__URL': 'http://127.0.0.1:9000/my-bucket/counties.mbtiles',
+                'MBTILES__1__MIN_ZOOM': '2',
+                'MBTILES__1__MAX_ZOOM': '16',
                 'MBTILES__1__IDENTIFIER': 'mytiles',
                 'MBTILES__1__VERSION': '1.1',
                 'HTTP_ACCESS_CONTROL_ALLOW_ORIGIN': 'https://my.test/',
@@ -147,6 +149,8 @@ def test_styles_file(processes):
         'openmaptiles': {
             'type': 'vector',
             'tiles': ['http://127.0.0.1:8080/v1/tiles/mytiles@1.1/{z}/{x}/{y}.mvt'],
+            'minzoom': 2,
+            'maxzoom': 16,
         },
     }
     assert style_dict['glyphs'] == \
@@ -170,6 +174,8 @@ def test_styles_file_x_forwarded(processes):
         'openmaptiles': {
             'type': 'vector',
             'tiles': ['https://www.mypublicdomain.com/v1/tiles/mytiles@1.1/{z}/{x}/{y}.mvt'],
+            'minzoom': 2,
+            'maxzoom': 16,
         },
     }
     assert style_dict['glyphs'] == \

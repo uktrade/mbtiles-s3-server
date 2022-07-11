@@ -62,9 +62,13 @@ def mbtiles_s3_server(
         return tempdir
 
     mbtiles_dict = {
-        (mbtile['IDENTIFIER'], mbtile['VERSION']): exit_stack.enter_context(sqlite_s3_query(
-            url=mbtile['URL'], get_http_client=get_http_client
-        ))
+        (mbtile['IDENTIFIER'], mbtile['VERSION']): {
+            'query': exit_stack.enter_context(sqlite_s3_query(
+                url=mbtile['URL'], get_http_client=get_http_client
+            )),
+            'min_zoom': int(mbtile['MIN_ZOOM']),
+            'max_zoom': int(mbtile['MAX_ZOOM']),
+        }
         for mbtile in mbtiles
     }
 
@@ -128,7 +132,7 @@ def mbtiles_s3_server(
 
     def get_tile(identifier, version, z, x, y):
         try:
-            mbtiles_sqlite_s3_query = mbtiles_dict[(identifier, version)]
+            mbtiles_sqlite_s3_query = mbtiles_dict[(identifier, version)]['query']
         except KeyError:
             return Response(status=404)
 
@@ -163,7 +167,7 @@ def mbtiles_s3_server(
             return Response(status=400)
 
         try:
-            mbtiles_dict[(tiles_identifier, tiles_version)]
+            tiles = mbtiles_dict[(tiles_identifier, tiles_version)]
         except KeyError:
             return Response(status=404)
 
@@ -188,6 +192,8 @@ def mbtiles_s3_server(
             'tiles': [
                 request.url_root + 'v1/tiles/' + tiles_identifier_with_version + '/{z}/{x}/{y}.mvt'
             ],
+            'minzoom': tiles['min_zoom'],
+            'maxzoom': tiles['max_zoom'],
         }
         style_dict['glyphs'] = request.url_root + 'v1/fonts/' + \
             fonts_identifier_with_version + '/{fontstack}/{range}.pbf'
