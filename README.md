@@ -61,7 +61,7 @@ The libsqlite3 binary library is also required, but this is typically already in
    ```bash
    PORT=8080 \
    MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/mytiles-65536.mbtiles \
-   MBTILES__1__MAX_ZOOM=0 \
+   MBTILES__1__MIN_ZOOM=0 \
    MBTILES__1__MAX_ZOOM=14 \
    MBTILES__1__IDENTIFIER=mytiles \
    MBTILES__1__VERSION=1.0.0 \
@@ -79,7 +79,7 @@ The libsqlite3 binary library is also required, but this is typically already in
    ```bash
    PORT=8080 \
    MBTILES__1__URL=https://my-bucket.s3.eu-west-2.amazonaws.com/mytiles-65536.mbtiles \
-   MBTILES__1__MAX_ZOOM=0 \
+   MBTILES__1__MIN_ZOOM=0 \
    MBTILES__1__MAX_ZOOM=14 \
    MBTILES__1__IDENTIFIER=mytiles \
    MBTILES__1__VERSION=1.0.0 \
