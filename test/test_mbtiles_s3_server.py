@@ -213,14 +213,14 @@ def test_styles_file_with_tiles_that_does_not_exists(processes):
 def test_styles_file_without_fonts_argument(processes):
     response = httpx.get(
         'http://127.0.0.1:8080/v1/styles/'
-        'positron-gl-style@1.0.0/style.json?tiles=mytiles')
+        'positron-gl-style@1.0.0/style.json?tiles=mytiles@1.1')
     assert response.status_code == 400
 
 
 def test_styles_file_without_fonts_version(processes):
     response = httpx.get(
         'http://127.0.0.1:8080/v1/styles/'
-        'positron-gl-style@1.0.0/style.json?fonts=fonts-gl&tiles=mytiles')
+        'positron-gl-style@1.0.0/style.json?fonts=fonts-gl&tiles=mytiles@1.1')
     assert response.status_code == 400
 
 
