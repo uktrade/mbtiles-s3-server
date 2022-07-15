@@ -1,8 +1,28 @@
-version: 2
+version: 2.1
+
 jobs:
-  build:
+  download-test-reporter:
     docker:
-      - image: cimg/python:3.9.8
+      - image: cimg/base:2021.04
+    steps:
+      - attach_workspace:
+          at: ~/workspace
+      - run:
+          name: Download test reporter
+          command: |
+            set -exu
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - cc-test-reporter
+  test:
+    parameters:
+      python-version:
+        type: string
+    docker:
+      - image: cimg/python:<< parameters.python-version >>
       - image: minio/minio:RELEASE.2022-07-04T21-02-54Z
         environment:
           MINIO_ACCESS_KEY: AKIAIOSFODNN7EXAMPLE
@@ -10,7 +30,6 @@ jobs:
           MINIO_REGION: us-east-1
         entrypoint: sh
         command: ['-c', 'mkdir -p /data1 && mkdir -p /data2 && mkdir -p /data3 && mkdir -p /data4 && minio server /data{1...4}']
-    working_directory: ~/repo
     steps:
       - run:
           name: Install git-lfs
@@ -19,22 +38,63 @@ jobs:
             sudo apt-get install git-lfs
       - checkout
       - run:
+          # Interestingly doesn't seem to be needed for Python >= 3.9
+          # Maybe something to do with the Python docker images?
+          name: Fetch lfs objects
+          command: |
+            git lfs pull
+      - attach_workspace:
+          at: ~/workspace
+      - run:
           name: Install dependencies
           command: |
+            pip install --upgrade pip
             pip install -r requirements_test.txt
             pip install .
-            pre-commit install --install-hooks
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
-          name: Run linting
-          command: pre-commit run --all-files
       - run:
           name: Run tests
           command: |
-            set -xu
-            ./cc-test-reporter before-build
+            set -exu
+            ~/workspace/cc-test-reporter before-build
             ./test/test_mbtiles_s3_server.sh
             coverage combine
             coverage xml
-            ./cc-test-reporter after-build
+            ~/workspace/cc-test-reporter format-coverage --output coverage/<< parameters.python-version >>.json
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - coverage/*.json
+  upload-coverage:
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - attach_workspace:
+          at: ~/workspace
+      - run:
+          name: Upload coverage
+          command: |
+            set -exu
+            ~/workspace/cc-test-reporter sum-coverage ~/workspace/coverage/*.json -p 8
+            ~/workspace/cc-test-reporter upload-coverage
+
+workflows:
+  test:
+    jobs:
+      - download-test-reporter
+      - test:
+          requires:
+            - download-test-reporter
+          matrix:
+            parameters:
+              python-version:
+                - "3.7.4"
+                - "3.7.11"
+                - "3.8.0"
+                - "3.8.12"
+                - "3.9.0"
+                - "3.9.13"
+                - "3.10.0"
+                - "3.10.5"
+      - upload-coverage:
+          requires:
+            - test
