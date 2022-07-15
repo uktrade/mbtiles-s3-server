@@ -49,14 +49,4 @@ glyphs = _reflection.GeneratedProtocolMessageType('glyphs', (_message.Message,),
 })
 _sym_db.RegisterMessage(glyphs)
 
-if _descriptor._USE_C_DESCRIPTORS is False:
-
-    DESCRIPTOR._options = None
-    DESCRIPTOR._serialized_options = b'H\003'
-    _GLYPH._serialized_start = 16
-    _GLYPH._serialized_end = 126
-    _FONTSTACK._serialized_start = 128
-    _FONTSTACK._serialized_end = 192
-    _GLYPHS._serialized_start = 194
-    _GLYPHS._serialized_end = 237
 # @@protoc_insertion_point(module_scope)
