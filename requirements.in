@@ -1,4 +1,0 @@
-flask
-gevent
-protobuf
-sqlite-s3-query
