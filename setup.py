@@ -20,11 +20,11 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'License :: OSI Approved :: BSD License',
     ],
-    python_requires='>=3.6.0',
+    python_requires='>=3.7.0',
     install_requires=[
-        'flask>=2.1.2',
+        'flask>=2.0.3',
         'gevent>=21.12.0',
-        'protobuf>=4.21.2',
+        'protobuf>=3.0.0',
         'sqlite-s3-query>=0.0.68',
     ],
     packages=[
