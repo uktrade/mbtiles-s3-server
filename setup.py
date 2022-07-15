@@ -20,7 +20,7 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'License :: OSI Approved :: BSD License',
     ],
-    python_requires='>=3.5.0',
+    python_requires='>=3.6.0',
     install_requires=[
         'flask>=2.1.2',
         'gevent>=21.12.0',
