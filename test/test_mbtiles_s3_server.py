@@ -258,6 +258,12 @@ def test_font_files(processes):
     assert len(response.content) > 1000
 
 
+def test_font_pack_that_does_not_exist(processes):
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/fonts/not-exist@1.0.0/Metropolis Regular/0-255.pbf')
+    assert response.status_code == 404
+
+
 def test_font_that_does_not_exist(processes):
     response = httpx.get(
         'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0/Jane/0-255.pbf')
