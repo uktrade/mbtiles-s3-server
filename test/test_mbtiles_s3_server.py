@@ -185,26 +185,49 @@ def test_styles_file_x_forwarded(processes):
 def test_styles_file_does_not_exists(processes):
     response = httpx.get(
         'http://127.0.0.1:8080/v1/styles'
-        '/positron-gl-style@1.0.0/notmystyle.json?tiles=mytiles@1.1')
+        '/positron-gl-style@1.0.0/notmystyle.json?fonts=fonts-gl&tiles=mytiles@1.1')
     assert response.status_code == 404
 
 
 def test_styles_file_without_tiles_argument(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/style.json')
+        'http://127.0.0.1:8080/v1/styles/'
+        'positron-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0')
     assert response.status_code == 400
 
 
 def test_styles_file_without_tiles_version(processes):
     response = httpx.get(
-        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/style.json?tiles=mytiles')
+        'http://127.0.0.1:8080/v1/styles/'
+        'positron-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0&tiles=mytiles')
     assert response.status_code == 400
 
 
 def test_styles_file_with_tiles_that_does_not_exists(processes):
     response = httpx.get(
         'http://127.0.0.1:8080/v1/styles'
-        '/positron-gl-style@1.0.0/style.json?tiles=notmytiles@1.1')
+        '/positron-gl-style@1.0.0/style.json?fonts=fonts-gl@1.0.0&tiles=notmytiles@1.1')
+    assert response.status_code == 404
+
+
+def test_styles_file_without_fonts_argument(processes):
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/styles/'
+        'positron-gl-style@1.0.0/style.json?tiles=mytiles')
+    assert response.status_code == 400
+
+
+def test_styles_file_without_fonts_version(processes):
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/styles/'
+        'positron-gl-style@1.0.0/style.json?fonts=fonts-gl&tiles=mytiles')
+    assert response.status_code == 400
+
+
+def test_styles_file_with_fonts_that_does_not_exists(processes):
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/styles'
+        '/positron-gl-style@1.0.0/style.json?fonts=not-exists@1.0.0&tiles=mytiles@1.1')
     assert response.status_code == 404
 
 
