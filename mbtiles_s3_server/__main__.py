@@ -73,7 +73,7 @@ def mbtiles_s3_server(
     }
 
     styles_dict = {
-        (style_id, style_version): { 
+        (style_id, style_version): {
             file_name: read(f'vendor/{style_id}@{style_version}/{file_name}')
             for file_name in file_names
         }
