@@ -73,23 +73,23 @@ def mbtiles_s3_server(
     }
 
     styles_dict = {
-        ('dark-matter-gl-style', '1.0.0', 'style.json'):
+        ('dark-matter-gl-style', '1.0.0'):
         read('vendor/dark-matter-gl-style@1.0.0/style.json'),
-        ('fiord-color-gl-style', '1.0.0', 'style.json'):
+        ('fiord-color-gl-style', '1.0.0'):
         read('vendor/fiord-color-gl-style@1.0.0/style.json'),
-        ('maptiler-3d-gl-style', '1.0.0', 'style.json'):
+        ('maptiler-3d-gl-style', '1.0.0'):
         read('vendor/maptiler-3d-gl-style@1.0.0/style.json'),
-        ('maptiler-basic-gl-style', '1.0.0', 'style.json'):
+        ('maptiler-basic-gl-style', '1.0.0'):
         read('vendor/maptiler-basic-gl-style@1.0.0/style.json'),
-        ('maptiler-terrain-gl-style', '1.0.0', 'style.json'):
+        ('maptiler-terrain-gl-style', '1.0.0'):
         read('vendor/maptiler-terrain-gl-style@1.0.0/style.json'),
-        ('maptiler-toner-gl-style', '1.0.0', 'style.json'):
+        ('maptiler-toner-gl-style', '1.0.0'):
         read('vendor/maptiler-toner-gl-style@1.0.0/style.json'),
-        ('osm-bright-gl-style', '1.0.0', 'style.json'):
+        ('osm-bright-gl-style', '1.0.0'):
         read('vendor/osm-bright-gl-style@1.0.0/style.json'),
-        ('osm-liberty', '1.0.0', 'style.json'):
+        ('osm-liberty', '1.0.0'):
         read('vendor/osm-liberty@1.0.0/style.json'),
-        ('positron-gl-style', '1.0.0', 'style.json'):
+        ('positron-gl-style', '1.0.0'):
         read('vendor/positron-gl-style@1.0.0/style.json'),
     }
 
@@ -150,9 +150,9 @@ def mbtiles_s3_server(
             }) if tile_data is not None else \
             Response(status=404)
 
-    def get_styles(identifier, version, file):
+    def get_styles(identifier, version):
         try:
-            style_bytes = styles_dict[(identifier, version, file)]
+            style_bytes = styles_dict[(identifier, version)]
         except KeyError:
             return Response(status=404)
 
@@ -274,7 +274,7 @@ def mbtiles_s3_server(
         '/v1/tiles/<string:identifier>@<string:version>/<int:z>/<int:x>/<int:y>.mvt',
         view_func=get_tile)
     app.add_url_rule(
-        '/v1/styles/<string:identifier>@<string:version>/<string:file>', view_func=get_styles)
+        '/v1/styles/<string:identifier>@<string:version>/style.json', view_func=get_styles)
     app.add_url_rule(
         '/v1/fonts/<string:identifier>@<string:version>/<string:stack>/<string:range>.pbf',
         view_func=get_fonts)
