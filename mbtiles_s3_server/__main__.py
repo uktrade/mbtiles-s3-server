@@ -73,20 +73,21 @@ def mbtiles_s3_server(
     }
 
     styles_dict = {
-        (style_id, style_version): {
-            'style.json': read(f'vendor/{style_id}@{style_version}/style.json')
+        (style_id, style_version): { 
+            file_name: read(f'vendor/{style_id}@{style_version}/{file_name}')
+            for file_name in file_names
         }
-        for (style_id, style_version) in (
-            ('dark-matter-gl-style', '1.0.0'),
-            ('fiord-color-gl-style', '1.0.0'),
-            ('maptiler-3d-gl-style', '1.0.0'),
-            ('maptiler-terrain-gl-style', '1.0.0'),
-            ('maptiler-basic-gl-style', '1.0.0'),
-            ('maptiler-terrain-gl-style', '1.0.0'),
-            ('maptiler-toner-gl-style', '1.0.0'),
-            ('osm-bright-gl-style', '1.0.0'),
-            ('osm-liberty', '1.0.0'),
-            ('positron-gl-style', '1.0.0'),
+        for (style_id, style_version, file_names) in (
+            ('dark-matter-gl-style', '1.0.0', ('style.json',)),
+            ('fiord-color-gl-style', '1.0.0', ('style.json',)),
+            ('maptiler-3d-gl-style', '1.0.0', ('style.json',)),
+            ('maptiler-terrain-gl-style', '1.0.0', ('style.json',)),
+            ('maptiler-basic-gl-style', '1.0.0', ('style.json',)),
+            ('maptiler-terrain-gl-style', '1.0.0', ('style.json',)),
+            ('maptiler-toner-gl-style', '1.0.0', ('style.json',)),
+            ('osm-bright-gl-style', '1.0.0', ('style.json',)),
+            ('osm-liberty', '1.0.0', ('style.json',)),
+            ('positron-gl-style', '1.0.0', ('style.json',)),
         )
     }
 
