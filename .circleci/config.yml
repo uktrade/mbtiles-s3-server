@@ -19,6 +19,8 @@ jobs:
             - cc-test-reporter
   test:
     parameters:
+      dependencies:
+        type: string
       python-version:
         type: string
     docker:
@@ -45,12 +47,25 @@ jobs:
             git lfs pull
       - attach_workspace:
           at: ~/workspace
-      - run:
-          name: Install dependencies
-          command: |
-            pip install --upgrade pip
-            pip install -r requirements_test.txt
-            pip install .
+      - when:
+          condition:
+            equal: [earliest, << parameters.dependencies >>]
+          steps: 
+            - run:
+                name: Install earliest dependencies
+                command: |
+                  pip install --upgrade pip
+                  sed 's/>=/==/' requirements.txt > /tmp/requirements_earliest.txt
+                  pip install -r test/requirements_test.txt -r /tmp/requirements_earliest.txt
+      - when:
+          condition:
+            equal: [latest, << parameters.dependencies >>]
+          steps: 
+            - run:
+                name: Install latest dependencies
+                command: |
+                  pip install --upgrade pip
+                  pip install -r test/requirements_test.txt -r requirements.txt
       - run:
           name: Run tests
           command: |
@@ -59,7 +74,7 @@ jobs:
             ./test/test_mbtiles_s3_server.sh
             coverage combine
             coverage xml
-            ~/workspace/cc-test-reporter format-coverage --output coverage/<< parameters.python-version >>.json
+            ~/workspace/cc-test-reporter format-coverage --output coverage/<< parameters.dependencies >>-<< parameters.python-version >>.json
       - persist_to_workspace:
           root: ./
           paths:
@@ -74,7 +89,7 @@ jobs:
           name: Upload coverage
           command: |
             set -exu
-            ~/workspace/cc-test-reporter sum-coverage ~/workspace/coverage/*.json -p 8
+            ~/workspace/cc-test-reporter sum-coverage ~/workspace/coverage/*.json -p 16
             ~/workspace/cc-test-reporter upload-coverage
 
 workflows:
@@ -86,6 +101,9 @@ workflows:
             - download-test-reporter
           matrix:
             parameters:
+              dependencies:
+                - "earliest"
+                - "latest"
               python-version:
                 - "3.7.4"
                 - "3.7.11"

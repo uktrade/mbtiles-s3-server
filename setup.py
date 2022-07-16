@@ -20,7 +20,7 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'License :: OSI Approved :: BSD License',
     ],
-    python_requires='>=3.7.0',
+    python_requires='>=3.7.4',
     install_requires=[
         line for line in
         contents('requirements.txt').splitlines()
