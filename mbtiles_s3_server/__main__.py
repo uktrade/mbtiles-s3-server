@@ -78,16 +78,22 @@ def mbtiles_s3_server(
             for file_name in file_names
         }
         for (style_id, style_version, file_names) in (
-            ('dark-matter-gl-style', '1.0.0', ('style.json',)),
-            ('fiord-color-gl-style', '1.0.0', ('style.json',)),
+            ('dark-matter-gl-style', '1.0.0', ('style.json', 'sprite.json',
+             'sprite.png', 'sprite@2x.json', 'sprite@2x.png',)),
+            ('fiord-color-gl-style', '1.0.0', ('style.json', 'sprite.json',
+             'sprite.png', 'sprite@2x.json', 'sprite@2x.png',)),
             ('maptiler-3d-gl-style', '1.0.0', ('style.json',)),
             ('maptiler-terrain-gl-style', '1.0.0', ('style.json',)),
             ('maptiler-basic-gl-style', '1.0.0', ('style.json',)),
             ('maptiler-terrain-gl-style', '1.0.0', ('style.json',)),
-            ('maptiler-toner-gl-style', '1.0.0', ('style.json',)),
-            ('osm-bright-gl-style', '1.0.0', ('style.json',)),
-            ('osm-liberty', '1.0.0', ('style.json',)),
-            ('positron-gl-style', '1.0.0', ('style.json',)),
+            ('maptiler-toner-gl-style', '1.0.0', ('style.json', 'sprite.json',
+             'sprite.png', 'sprite@2x.json', 'sprite@2x.png',)),
+            ('osm-bright-gl-style', '1.0.0', ('style.json', 'sprite.json',
+             'sprite.png', 'sprite@2x.json', 'sprite@2x.png',)),
+            ('osm-liberty', '1.0.0', ('style.json', 'sprite.json',
+             'sprite.png', 'sprite@2x.json', 'sprite@2x.png',)),
+            ('positron-gl-style', '1.0.0', ('style.json', 'sprite.json',
+             'sprite.png', 'sprite@2x.json', 'sprite@2x.png',)),
         )
     }
 
@@ -196,8 +202,32 @@ def mbtiles_s3_server(
         style_dict['glyphs'] = request.url_root + 'v1/fonts/' + \
             fonts_identifier_with_version + '/{fontstack}/{range}.pbf'
 
+        if 'sprite' in style_dict:
+            style_dict['sprite'] = request.url_root + 'v1/styles/' + \
+                identifier + '@' + version + '/sprite'
+
         return Response(status=200, content_type='application/json',
                         response=json.dumps(style_dict))
+
+    def get_sprite_file(identifier, version, file, content_type):
+        try:
+            sprite_bytes = styles_dict[(identifier, version)][file]
+        except KeyError:
+            return Response(status=404)
+
+        return Response(status=200, content_type=content_type, response=sprite_bytes)
+
+    def get_sprite_1x_json(identifier, version):
+        return get_sprite_file(identifier, version, 'sprite.json', 'application/json')
+
+    def get_sprite_2x_json(identifier, version):
+        return get_sprite_file(identifier, version, 'sprite@2x.json', 'application/json')
+
+    def get_sprite_1x_png(identifier, version):
+        return get_sprite_file(identifier, version, 'sprite.png', 'image/png')
+
+    def get_sprite_2x_png(identifier, version):
+        return get_sprite_file(identifier, version, 'sprite@2x.png', 'image/png')
 
     def get_fonts(identifier, version, stack, range):
         # Combines all the fonts in the requested stack, but only include one glyph for each id
@@ -272,7 +302,20 @@ def mbtiles_s3_server(
         '/v1/tiles/<string:identifier>@<string:version>/<int:z>/<int:x>/<int:y>.mvt',
         view_func=get_tile)
     app.add_url_rule(
-        '/v1/styles/<string:identifier>@<string:version>/style.json', view_func=get_styles)
+        '/v1/styles/<string:identifier>@<string:version>/style.json',
+        view_func=get_styles)
+    app.add_url_rule(
+        '/v1/styles/<string:identifier>@<string:version>/sprite.json',
+        view_func=get_sprite_1x_json)
+    app.add_url_rule(
+        '/v1/styles/<string:identifier>@<string:version>/sprite@2x.json',
+        view_func=get_sprite_2x_json)
+    app.add_url_rule(
+        '/v1/styles/<string:identifier>@<string:version>/sprite.png',
+        view_func=get_sprite_1x_png)
+    app.add_url_rule(
+        '/v1/styles/<string:identifier>@<string:version>/sprite@2x.png',
+        view_func=get_sprite_2x_png)
     app.add_url_rule(
         '/v1/fonts/<string:identifier>@<string:version>/<string:stack>/<string:range>.pbf',
         view_func=get_fonts)

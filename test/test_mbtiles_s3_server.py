@@ -155,6 +155,8 @@ def test_styles_file(processes):
     }
     assert style_dict['glyphs'] == \
         'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0/{fontstack}/{range}.pbf'
+    assert style_dict['sprite'] == \
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/sprite'
 
 
 def test_styles_file_x_forwarded(processes):
@@ -180,6 +182,36 @@ def test_styles_file_x_forwarded(processes):
     }
     assert style_dict['glyphs'] == \
         'https://www.mypublicdomain.com/v1/fonts/fonts-gl@1.0.0/{fontstack}/{range}.pbf'
+    assert style_dict['sprite'] == \
+        'https://www.mypublicdomain.com/v1/styles/positron-gl-style@1.0.0/sprite'
+
+
+def test_sprites_exists(processes):
+    urls = (
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/sprite.json',
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/sprite@2x.json',
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/sprite.png',
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/sprite@2x.png',
+    )
+
+    for url in urls:
+        response = httpx.get(url)
+        response.raise_for_status()
+        assert response.status_code == 200
+        assert len(response.content) > 10
+
+
+def test_sprites_not_exist(processes):
+    urls = (
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@2.0.0/sprite.json',
+        'http://127.0.0.1:8080/v1/styles/positron-gl-style@1.0.0/sprite@3x.png',
+        'http://127.0.0.1:8080/v1/styles/maptiler-basic-gl-style@1.0.0/sprite.json',
+        'http://127.0.0.1:8080/v1/styles/another-one@1.0.0/sprite.json',
+    )
+
+    for url in urls:
+        response = httpx.get(url)
+        assert response.status_code == 404
 
 
 def test_styles_file_does_not_exists(processes):
