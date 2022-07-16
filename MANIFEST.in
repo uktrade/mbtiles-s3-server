@@ -1,2 +1,2 @@
-requirements.txt
+include requirements.txt
 recursive-include mbtiles_s3_server *
