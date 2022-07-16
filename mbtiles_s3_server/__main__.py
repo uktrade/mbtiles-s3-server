@@ -73,7 +73,9 @@ def mbtiles_s3_server(
     }
 
     styles_dict = {
-        (style_id, style_version): read(f'vendor/{style_id}@{style_version}/style.json')
+        (style_id, style_version): {
+            'style.json': read(f'vendor/{style_id}@{style_version}/style.json')
+        }
         for (style_id, style_version) in (
             ('dark-matter-gl-style', '1.0.0'),
             ('fiord-color-gl-style', '1.0.0'),
@@ -147,7 +149,7 @@ def mbtiles_s3_server(
 
     def get_styles(identifier, version):
         try:
-            style_bytes = styles_dict[(identifier, version)]
+            style_bytes = styles_dict[(identifier, version)]['style.json']
         except KeyError:
             return Response(status=404)
 
