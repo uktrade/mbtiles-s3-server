@@ -145,7 +145,7 @@ Hosting your own vector map tiles to show them in a browser requires quite a few
 
 4. **Sprite**
 
-   A sprite is actually 4 URLs: a JSON index file and a single PNG file, and a "@2x" JSON index file and PNG files for higher pixel ratio devices (e.g. Retina). The JSON files contains the offsets and sizes of images within corresponding PNG file. The style file refers the common "base" of these. For example, if the style file has `"sprite":"https://my.test/sprite"` then the 4 files must be at `https://my.test/sprite.json`, `https://my.test/sprite.png`, `https://my.test/sprite@2x.json` and https://my.test/sprite@2x.png`.
+   A sprite is actually 4 URLs: a JSON index file and a single PNG file, and a "@2x" JSON index file and PNG files for higher pixel ratio devices (e.g. Retina). The JSON files contains the offsets and sizes of images within corresponding PNG file. The style file refers the common "base" of these. For example, if the style file has `"sprite":"https://my.test/sprite"` then the 4 files must be at `https://my.test/sprite.json`, `https://my.test/sprite.png`, `https://my.test/sprite@2x.json` and `https://my.test/sprite@2x.png`.
 
 5. **Vector map tiles**
 
