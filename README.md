@@ -131,7 +131,7 @@ The libsqlite3 binary library is also required, but this is typically already in
 
 **`GET /v1/tiles/{identifier}@{version}/{z}/{x}/{y}.mvt`**
 
-Fetch a tile in MVT format
+Fetch a tile in Mapbox Vector Tile (MVT) format
 
 - `identifier`
 
