@@ -151,7 +151,7 @@ Hosting your own vector map tiles to show them in a browser requires quite a few
 
    A set of often millions of tiles each covering a different location and different zoom level. These can be distributed as a single mbtiles file, but this is not the format that the Javascript library accepts. This on-the-fly conversion from the mbtiles file to tiles is the main feature of this server.
 
-   The mbtiles file is a SQLite file, containing gzipped Mapbox Vector Tile tiles. This server leaves the un-gzipping to the browser, by sending tiles with a `content-encoding: gzip` header.
+   The mbtiles file is a SQLite file, containing gzipped Mapbox Vector Tile tiles. This server leaves the un-gzipping to the browser, by sending tiles with a `content-encoding: gzip` header, which results in browser un-gzipping the tile data before it hits the Javascript.
 
 
 ## Licenses
