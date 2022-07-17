@@ -118,12 +118,20 @@ def test_meta_put_many_objects(processes):
 
 
 def test_tile_exists(processes):
-    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/0/0/0.mvt')
-    response.raise_for_status()
+    response_gzip = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/0/0/0.mvt')
+    response_gzip.raise_for_status()
 
-    assert response.headers['access-control-allow-origin'] == 'https://my.test/'
-    assert response.status_code == 200
-    assert len(response.content) > 1000
+    assert response_gzip.headers['access-control-allow-origin'] == 'https://my.test/'
+    assert response_gzip.headers['content-encoding'] == 'gzip'
+    assert response_gzip.status_code == 200
+
+    response = httpx.get('http://127.0.0.1:8080/v1/tiles/mytiles@1.1/0/0/0.mvt', headers={
+        b'accept-encoding': b'identity',
+    })
+    response.raise_for_status()
+    assert 'content-encoding' not in response.headers
+
+    assert response.content == response_gzip.content
 
 
 def test_tile_does_not_exists(processes):
@@ -276,10 +284,21 @@ def test_static_file_not_exist(processes):
 
 
 def test_font_file(processes):
-    response = httpx.get(
+    response_gzip = httpx.get(
         'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0/Metropolis Regular/0-255.pbf')
+    assert response_gzip.status_code == 200
+    assert response_gzip.headers['content-encoding'] == 'gzip'
+
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0/Metropolis Regular/0-255.pbf',
+        headers={
+            b'accept-encoding': b'identity'
+        }
+    )
     assert response.status_code == 200
-    assert len(response.content) > 1000
+    assert 'content-encoding' not in response.headers
+
+    assert response_gzip.content == response.content
 
 
 def test_font_files(processes):

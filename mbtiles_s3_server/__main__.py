@@ -147,7 +147,16 @@ def mbtiles_s3_server(
             for row in rows:
                 tile_data = row[0]
 
+        allows_gzip = 'gzip' in request.headers.get(
+            'accept-encoding', '').replace(' ', '').split(',')
+
+        def ungzip(data):
+            return zlib.decompress(data, wbits=32 + zlib.MAX_WBITS)
+
         return \
+            Response(status=200, response=ungzip(tile_data), headers={
+                'content-type': 'application/vnd.mapbox-vector-tile',
+            }) if tile_data is not None and not allows_gzip else \
             Response(status=200, response=tile_data, headers={
                 'content-encoding': 'gzip',
                 'content-type': 'application/vnd.mapbox-vector-tile',
@@ -278,10 +287,22 @@ def mbtiles_s3_server(
         for glyph in sorted(pdf_combined_glyphs, key=lambda g: g.id):
             pbf_combined_stack.glyphs.append(glyph)
 
-        compress_obj = zlib.compressobj(wbits=31)
-        return Response(status=200, headers={
-            'content-encoding': 'gzip',
-        }, response=compress_obj.compress(pbf_combined.SerializeToString()) + compress_obj.flush())
+        serialized = pbf_combined.SerializeToString()
+        allows_gzip = 'gzip' in request.headers.get(
+            'accept-encoding', '').replace(' ', '').split(',')
+
+        def gzip(data):
+            compress_obj = zlib.compressobj(wbits=31)
+            return compress_obj.compress(serialized) + compress_obj.flush()
+
+        return \
+            Response(status=200, headers={
+                'content-encoding': 'gzip',
+                'content-type': 'application/vnd.google.protobuf',
+            }, response=gzip(serialized)) if allows_gzip else \
+            Response(status=200, headers={
+                'content-type': 'application/vnd.google.protobuf',
+            }, response=serialized)
 
     def get_static(identifier, version, file):
         try:
