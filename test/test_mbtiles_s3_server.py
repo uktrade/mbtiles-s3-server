@@ -327,6 +327,12 @@ def test_font_file_that_does_not_exist(processes):
     assert response.status_code == 404
 
 
+def test_font_stack_too_large(processes):
+    response = httpx.get(
+        'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0/a,a,a,a,a,a/0-255.pbf')
+    assert response.status_code == 400
+
+
 def test_font_file_that_does_not_exist_with_dot(processes):
     response = httpx.get(
         'http://127.0.0.1:8080/v1/fonts/fonts-gl@1.0.0/Metropolis..Regular/0-255.pbf')

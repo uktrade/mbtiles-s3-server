@@ -260,13 +260,20 @@ def mbtiles_s3_server(
         if '.' in stack or '.' in range:
             return Response(status=404)
 
+        fonts = stack.split(',')
+
+        # So a request can't use too much CPU. So far haven't seen a stack that
+        # that has more than 2, so this should be plenty for real uses
+        if len(fonts) >= 5:
+            return Response(status=400)
+
         try:
             pbfs = tuple((
                 parse_pbf(zlib.decompress(
                     read(os.path.join(font_path, font, range + '.pbf.gz')),
                     wbits=32 + zlib.MAX_WBITS
                 ))
-                for font in stack.split(',')
+                for font in fonts
             ))
         except FileNotFoundError:
             return Response(status=404)
