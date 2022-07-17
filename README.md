@@ -137,7 +137,7 @@ Hosting your own vector map tiles to show them in a browser requires quite a few
 
 2. **Style file**
 
-   A JSON file that defines how the library should visually style the map data, and where it should find the map tiles, glyphs (fonts), and the sprite. This server transforms the built-in Style files on the fly to be able to refer to and map data.
+   A JSON file that defines how the library should visually style the map data, and where it should find the map tiles, glyphs (fonts), and the sprite. This server transforms the built-in Style files on the fly to be able to refer to any map data.
 
 3. **Glyphs** (fonts)
 
