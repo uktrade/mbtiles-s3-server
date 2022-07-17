@@ -137,19 +137,19 @@ Hosting your own vector map tiles to show them in a browser requires quite a few
 
 2. **Style file**
 
-   A JSON file that defines how the library should style the map tiles, and where it should find the map tiles, glyphs (fonts), and the sprite
+   A JSON file that defines how the library should visually style the map data, and where it should find the map tiles, glyphs (fonts), and the sprite. This server transforms the built-in Style files on the fly to be able to refer to and map data.
 
 3. **Glyphs** (fonts)
 
-   Sets of fonts; different fonts can be used for different labels and zoom levels, as defined in the Style file
+   Different fonts can be used for different labels and zoom levels, as defined in the Style file. The fonts must Signed Distance Field (SDF) fonts wrapped in a particular Protocol Buffer format. The Style file can refer to "stacks" of fonts; but unlike CSS, the server combines the fonts on the fly in an API where the resulting "font" has at most one glyph from each source font.
 
 4. **Sprite**
 
-   A single JSON index file and a single PNG file; the JSON file contains the offsets and sizes of images within the single PNG file
+   A sprite is actually 4 URLs: a JSON index file and a single PNG file, and a "@2x" JSON index file and PNG files for higher pixel ratio devices (e.g. Retina). The JSON files contains the offsets and sizes of images within corresponding PNG file. The style file refers the common "base" of these. For example, if the style file has `"sprite":"https://my.test/sprite"` then the 4 files must be at `https://my.test/sprite.json`, `https://my.test/sprite.png`, `https://my.test/sprite@2x.json` and https://my.test/sprite@2x.png`.
 
 5. **Vector map tiles**
 
-   A set of often hundreds of thousands of tiles each covering a different location and different zoom level. These can be distributed as a single mbtiles file, but this is not the format that the Javascript library accepts. This on-the-fly conversion from the mbtiles file to tiles is the main feature of this server.
+   A set of often millions of tiles each covering a different location and different zoom level. These can be distributed as a single mbtiles file, but this is not the format that the Javascript library accepts. This on-the-fly conversion from the mbtiles file to tiles is the main feature of this server.
 
 
 ## Licenses
