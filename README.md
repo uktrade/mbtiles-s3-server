@@ -127,6 +127,25 @@ The libsqlite3 binary library is also required, but this is typically already in
    and going to [http://localhost:8081/example.html](http://localhost:8081/example.html)
 
 
+## Core API
+
+**`/v1/tiles/{identifier}@{version}/{z}/{x}/{y}.mvt`**
+
+- `identifier`
+
+  An aribtrary identifier for a tileset configued via environment variables when starting the server, for example `TILES__1__IDENTIFIER` (see [Example usage](#example-usage)).
+
+- `version`
+
+  A version for a tileset configued via environment variables, for example `TILES__1__VERSION` (see [Example usage](#example-usage)). The version is part of the API to encourage releasing a new version of a tileset rather than replacing an existing one.
+
+  An arbitrary version of the tileset identified by the `identifier`.
+
+- `z`, `x`, `y`
+
+  The xyz coordinates of a tile in this tileset
+
+
 ## For the curious, advanced, or developers of this server itself
 
 Hosting your own vector map tiles to show them in a browser requires quite a few components:
