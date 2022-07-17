@@ -133,11 +133,11 @@ The libsqlite3 binary library is also required, but this is typically already in
 
 - `identifier`
 
-  An aribtrary identifier for a tileset configued via environment variables when starting the server, for example `TILES__1__IDENTIFIER` (see [Example usage](#example-usage)).
+  An aribtrary identifier for a tileset configued via environment variables when starting the server, for example `MBTILES__1__IDENTIFIER` (see [Example usage](#example-usage)).
 
 - `version`
 
-  A version for a tileset configued via environment variables, for example `TILES__1__VERSION` (see [Example usage](#example-usage)). The version is part of the API to encourage releasing a new version of a tileset rather than replacing an existing one.
+  A version for a tileset configued via environment variables, for example `MBTILES__1__VERSION` (see [Example usage](#example-usage)). The version is part of the API to encourage releasing a new version of a tileset rather than replacing an existing one.
 
   An arbitrary version of the tileset identified by the `identifier`.
 
